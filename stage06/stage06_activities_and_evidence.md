@@ -2,76 +2,76 @@
 
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
-- Group/tutorial: [response]
-- Members, GitHub usernames and cohorts: [response]
-- Repository URL: [response]
-- Starting SHA: [response]
+- Group/tutorial: Group 7, Wednesday 2:30-4:30
+- Members, GitHub usernames and cohorts: Shiven Mitra (shiven-uc), UG, Anish Atamkur (anish32132), UG
+- Repository URL: https://github.com/shiven-uc/st1-assignment-3-group7
+- Starting SHA: a597bfc9854f4d75f8adb97c713d3785c550fd18
 
 ## A Requirement to issue activities
 
 ### FR-02 Patient Search
 
-- Title: [response]
-- Context: [response]
-- Requirement: [response]
-- Acceptance criteria: [response]
-- Scope: [response]
-- Definition of Done: [response]
-- Owner: [response]
-- Actual issue link: [response]
+- Title: Add patient and practitioner lookup by ID (FR-02)
+- Context: The `find_patient` and `find_practitioner` functions in `services.py` currently raise `NotImplementedError`, as deliberately specified in the starter code. This prevents the services from searching for and returning registered patient and practitioner records.
+- Requirement: FR-02 Patient Search
+- Acceptance criteria: See issue #1. A registered ID returns the same stored object; a valid ID nobody has raises `LookupError`; a blank or invalid ID raises `ValueError`; IDs are trimmed and case-sensitive; the same cases apply to `find_practitioner`; lookup never creates a replacement or modifies records.
+- Scope: Included: looking up registered patients and practitioners by ID, returning the stored objects, and handling missing, blank or invalid IDs. Not included: displaying details, cancellation, the interactive menu, or registering, editing or deleting records.
+- Definition of Done: All relevant tests written and passing, reviewed by a different group member through a pull request, and merged into `main`.
+- Owner: shiven-uc
+- Actual issue link: https://github.com/shiven-uc/st1-assignment-3-group7/issues/1
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
 
-- Title: [response]
-- Context: [response]
-- Requirement: [response]
-- Acceptance criteria: [response]
-- Scope: [response]
-- Definition of Done: [response]
-- Owner: [response]
-- Actual issue link: [response]
+- Title: Add appointment cancellation with retained history (FR-06/FR-07)
+- Context: The `cancel_appointment` function in `services.py` currently raises `NotImplementedError`, preventing appointments from being cancelled through the service layer.
+- Requirement: FR-06 Appointment Cancellation with FR-07 Retained History
+- Acceptance criteria: See issue #2. Cancelling a scheduled appointment returns the cancelled object; an unknown ID raises `LookupError`; cancelling an already-cancelled or completed appointment raises `ValueError` and leaves status and details unchanged; after cancelling, `find_appointment` still returns the same object with its original details; a blank or invalid ID raises `ValueError`.
+- Scope: Included: cancelling scheduled appointments, handling unknown IDs, preventing illegal cancellations, and retaining cancelled records. Not included: patient and practitioner lookup (issue #1), listing appointments (Stage 9), creating or rescheduling appointments, permanently deleting records, or the interactive menu.
+- Definition of Done: All relevant tests written and passing, reviewed by a different group member through a pull request, and merged into `main`.
+- Owner: shiven-uc
+- Actual issue link: https://github.com/shiven-uc/st1-assignment-3-group7/issues/2
 
 ## B Commit quality
 
 | Original example | Strong or Weak | Reason |
 |---|---|---|
-| changes | [select] | [response] |
-| final version | [select] | [response] |
-| Add patient search by ID | [select] | [response] |
-| fix stuff | [select] | [response] |
-| Prevent cancellation of completed appointments | [select] | [response] |
+| changes | Weak | It doesn't say what was changed or why, so anyone reading the history later can't tell what the commit did without opening the code. |
+| final version | Weak | It is too vague and doesn't explain what was finalised or which feature was changed. |
+| Add patient search by ID | Strong | Clearly identifies the feature that was added and what it does. Someone reading the commit history can understand the change without opening the code. |
+| fix stuff | Weak | It doesn't identify the problem that was fixed or explain what was modified. |
+| Prevent cancellation of completed appointments | Strong | Clearly describes the specific behaviour being enforced. It is descriptive and easy to understand. |
 
 ## C Over scoped PR review
 
 A cancellation PR also renames unrelated patient fields, restructures unrelated code and adds a new dependency.
 
-- Scope concerns: [response]
-- Responsibility and architecture concerns: [response]
-- Testing and review concerns: [response]
-- Changes to remove or separate, with reasons: [response]
+- Scope concerns: The PR includes changes that are unrelated to appointment cancellation. This makes the pull request larger than necessary and harder to understand and review. The unrelated changes also don't trace back to any issue or acceptance criteria, so a reviewer has nothing to check them against.
+- Responsibility and architecture concerns: Renaming patient fields changes the public interface of the Patient domain object, which other code and the supplied tests rely on, and restructuring unrelated code could affect other parts of the system. Changes should remain focused on the cancellation service and the domain's existing cancel transition. A new dependency also needs a justification, because SmartCare's runtime uses only the standard library.
+- Testing and review concerns: Unrelated changes increase the risk of introducing bugs into existing functionality. Additional tests would be needed to ensure patient-related features and other existing functionality still work correctly. A green test run doesn't settle this, because passing tests only prove what they check, and reviewing the PR also becomes more difficult because the reviewer can't tell whether the unrelated changes are safe.
+- Changes to remove or separate, with reasons: Changes to remove or separate, with reasons: Remove the unrelated patient field renaming, code restructuring and new dependency from the cancellation PR. If these changes are necessary, create separate issues and pull requests for them so each change can be reviewed and tested independently. Keep the original PR focused only on appointment cancellation and retained history.
 
 ## D Challenge a weak Copilot review
 
 GitHub Copilot says: "Looks good; tests pass."
 
-- Missing evidence: [response]
-- Follow-up review question 1: [response]
-- Follow-up review question 2: [response]
-- Follow-up review question 3: [response]
-- Follow-up review question 4: [response]
-- Follow-up review question 5: [response]
-- Additional questions if useful: [response]
+- Missing evidence: The review does not provide evidence of which tests were run, what functionality was tested, whether edge cases were covered, or whether the code meets the acceptance criteria.
+- Follow-up review question 1: Have all acceptance criteria been tested, including successful searches and invalid inputs?
+- Follow-up review question 2: Which test command was run, from which directory, and what was the exact result?
+- Follow-up review question 3: Have blank or invalid IDs been tested to ensure the correct errors are raised?
+- Follow-up review question 4: Does the function return the original stored object rather than creating a copy or replacement?
+- Follow-up review question 5: Have you tested that cancelling an appointment retains its history and does not delete the original record?
+- Additional questions if useful: Are there any untested edge cases, unintended side effects, or changes outside the intended scope? Would these tests actually fail if the behaviour were wrong, or could an incorrect result still pass?
 
 ## E Team workflow agreement
 
 | Practice | Team agreement |
 |---|---|
-| Branch naming | [response] |
-| Commit message convention | [response] |
-| PR size | [response] |
-| Another-member review requirement | [response] |
-| Merge rule | [response] |
-| Significant Copilot disclosure rule | [response] |
+| Branch naming | Use descriptive branch names that include the feature or issue number, e.g. `feature/issue-1-patient-lookup`. |
+| Commit message convention | Use short, descriptive messages explaining what changed, starting with an action verb, e.g. `Add patient search by ID`. |
+| PR size | Keep pull requests small and focused on one issue or feature at a time to make reviewing easier. |
+| Another-member review requirement | Every pull request must be reviewed and approved by at least one different group member before merging. |
+| Merge rule | Only merge into `main` after the required review is completed, all feedback is resolved, there are no unrelated changes, and all relevant tests pass. |
+| Significant Copilot disclosure rule | Team members must disclose significant use of GitHub Copilot in the PR description and in section H of the Stage 6 record, and must review and understand any generated content before committing it. |
 
 ## F Issue and backlog index
 
@@ -79,8 +79,8 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 | Issue link | Requirement | Owner | Acceptance criteria or precise link | Status |
 |---|---|---|---|---|
-| [issue 1] | [response] | [response] | [response] | [response] |
-| [issue 2] | [response] | [response] | [response] | [response] |
+| https://github.com/shiven-uc/st1-assignment-3-group7/issues/1 | FR-02 Patient Search | shiven-uc | See issue #1: patient and practitioner lookup. Supporting criterion for `find_practitioner` to be confirmed with tutor. | Open |
+| https://github.com/shiven-uc/st1-assignment-3-group7/issues/2 | FR-06 Cancellation with FR-07 retained history | shiven-uc | See issue #2: cancel_appointment | Open |
 
 ## G Pull request evidence
 
