@@ -86,16 +86,16 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 Repeat this block per PR. Record actual events, not planned approvals.
 
-- PR link and title: [response]
-- Linked issue and requirement: [response]
-- Feature branch: [response]
-- Changed behaviour: [response]
-- Meaningful commits: [links]
-- Test command, directory and observed result: [response]
-- Another-member reviewer: [response]
-- Human observations recorded before Copilot: [link and time]
-- Requirement, responsibilities, test assertions and unrelated-scope checks: [response]
-- Key feedback: [response]
+- PR link and title: https://github.com/shiven-uc/st1-assignment-3-group7/pull/3, "Add patient and practitioner lookup by ID (FR-02)"
+- Linked issue and requirement: Issue #1, Add patient and practitioner lookup by ID (FR-02)
+- Feature branch: feature/issue-1-patient-lookup
+- Changed behaviour: find_patient and find_practitioner now return the stored object for a registered ID, raise LookupError for a valid ID nobody has, and raise ValueError for a blank or invalid ID. IDs are trimmed and case-sensitive. Lookup does not create or modify records.
+- Meaningful commits: https://github.com/shiven-uc/st1-assignment-3-group7/commit/7ccfdfe (Add patient and practitioner lookup by ID)
+- Test command, directory and observed result: python -m pytest, run from project/, 26 passed (8 starter tests plus 18 new), code SHA 7ccfdfe
+- Another-member reviewer: anish32132 (Anish Atamkur)
+- Human observations recorded before Copilot: Reviewed 5 November 2026, approximately 7:05 pm AEDT, before any Copilot use. Anish checked the acceptance criteria for both lookups: the original stored object is returned, an unknown valid ID raises LookupError, blank or invalid IDs raise ValueError, and lookup creates or modifies no records. He also checked the additional tests for trimming surrounding spaces and case-sensitive IDs, and found the implementation consistent with the criteria. His observations were supplied to me and entered by me on his behalf, as unit staff confirmed was acceptable.
+- Requirement, responsibilities, test assertions and unrelated-scope checks: Anish checked the implementation against the issue's acceptance criteria and reviewed the additional tests for trimming and case sensitivity.
+- Key feedback: The PR description did not include the test command, the test results or any significant AI assistance, so Anish could not verify that the tests had passed. He recommended adding that evidence.
 - Author response/change and verification: [response]
 - Reviewer recheck and approval: [link]
 - Merge outcome and SHA: [response]
@@ -131,14 +131,14 @@ Record meaningful required use, not every trivial completion. Repeat per signifi
 
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
 
-- Member: [response]
-- Implementation: [work and evidence]
-- Testing: [work and evidence]
-- Review: [work and evidence]
-- Issue refinement: [work and evidence]
-- Design and responsibility discussion: [work and evidence]
-- Debugging or integration: [work and evidence]
-- Documentation or team support: [work and evidence]
+- Member: Anish Atamkur (anish32132), UG
+- Implementation: Not applicable so far.
+- Testing: Helped develop test scenarios for valid, missing and blank IDs (see the acceptance criteria in issue #1).
+- Review: Reviewed the issue #1 lookup PR on 5 November 2026 (about 7:05 pm AEDT), checked each acceptance criterion and the extra trimming and case-sensitivity tests, and gave feedback on missing test evidence.
+- Issue refinement: Helped refine the FR-02 patient and practitioner lookup issue.
+- Design and responsibility discussion: Helped clarify the service-layer requirements and the expected error handling.
+- Debugging or integration: Not applicable so far.
+- Documentation or team support: Helped draft the team workflow agreement and commit message conventions, and gave feedback on the PR description.
 
 ## K Exit question
 
