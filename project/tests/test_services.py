@@ -3,7 +3,14 @@
 import pytest
 
 from smartcare.data_store import SmartCareDataStore
-from smartcare.services import PatientService, PractitionerService
+from datetime import datetime
+
+from smartcare.domain import AppointmentStatus
+from smartcare.services import (
+    AppointmentService,
+    PatientService,
+    PractitionerService,
+)
 
 
 def make_services() -> tuple[PatientService, PractitionerService]:
@@ -133,4 +140,80 @@ def test_find_practitioner_does_not_create_or_change_records() -> None:
     assert practitioner.practitioner_id == 'D1'
     assert practitioner.name == 'Taylor Example'
     assert practitioner.specialty == 'General practice'
-    
+
+
+# --- FR-06 / FR-07: appointment cancellation -------------------------------
+
+
+def make_appointment_services():
+    """Create a booked appointment using one shared store."""
+    data_store = SmartCareDataStore()
+    patients = PatientService(data_store)
+    practitioners = PractitionerService(data_store)
+    appointments = AppointmentService(data_store)
+
+    patients.register_patient('P1', 'Alex Example')
+    practitioners.register_practitioner(
+        'D1', 'Taylor Example', 'General practice',
+    )
+    appointment = appointments.book_appointment(
+        'A1', 'P1', 'D1', datetime(2026, 12, 1, 10, 0),
+    )
+    return appointments, appointment
+
+
+def test_cancel_appointment_changes_status_and_returns_same_object() -> None:
+    """Cancellation returns the stored appointment with CANCELLED status."""
+    appointments, appointment = make_appointment_services()
+
+    result = appointments.cancel_appointment('A1')
+
+    assert result is appointment
+    assert appointment.status == AppointmentStatus.CANCELLED
+
+
+def test_cancel_appointment_retains_history() -> None:
+    """A cancelled appointment remains available in the shared store."""
+    appointments, appointment = make_appointment_services()
+
+    appointments.cancel_appointment('A1')
+
+    assert appointments.find_appointment('A1') is appointment
+    assert appointments.data_store.find_appointment('A1') is appointment
+    assert appointment in appointments.data_store.list_appointments()
+
+
+def test_cancel_appointment_unknown_id_raises_lookup_error() -> None:
+    """An unknown appointment ID raises LookupError without changes."""
+    appointments, appointment = make_appointment_services()
+
+    with pytest.raises(LookupError):
+        appointments.cancel_appointment('A999')
+
+    assert appointment.status == AppointmentStatus.SCHEDULED
+    assert appointments.data_store.list_appointments() == [appointment]
+
+
+def test_cancel_appointment_repeated_attempt_raises_value_error() -> None:
+    """Cancelling twice is rejected and retains the cancelled record."""
+    appointments, appointment = make_appointment_services()
+    appointments.cancel_appointment('A1')
+
+    with pytest.raises(ValueError):
+        appointments.cancel_appointment('A1')
+
+    assert appointment.status == AppointmentStatus.CANCELLED
+    assert appointments.find_appointment('A1') is appointment
+    assert appointments.data_store.list_appointments() == [appointment]
+
+
+@pytest.mark.parametrize('bad_id', ['', '   ', None, 123])
+def test_cancel_appointment_invalid_id_raises_value_error(bad_id) -> None:
+    """Invalid appointment IDs raise ValueError without changing records."""
+    appointments, appointment = make_appointment_services()
+
+    with pytest.raises(ValueError):
+        appointments.cancel_appointment(bad_id)
+
+    assert appointment.status == AppointmentStatus.SCHEDULED
+    assert appointments.find_appointment('A1') is appointment
