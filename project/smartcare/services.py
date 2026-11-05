@@ -137,13 +137,14 @@ class AppointmentService:
         return appointment
 
     def cancel_appointment(self, appointment_id: str) -> Appointment:
-        """Stage 6: cancel through the domain method and retain the
-        appointment.
+        """Cancel a stored appointment while retaining its history.
 
-        Return the cancelled object. Unknown IDs raise LookupError;
-        invalid transitions raise ValueError and leave state unchanged.
+        Return the same appointment object. Raise LookupError for
+        unknown IDs and ValueError for invalid cancellation.
         """
-        raise NotImplementedError('Stage 6: appointment cancellation')
+        appointment = self.find_appointment(appointment_id)
+        appointment.cancel()
+        return appointment
 
     def list_practitioner_appointments(
         self,
