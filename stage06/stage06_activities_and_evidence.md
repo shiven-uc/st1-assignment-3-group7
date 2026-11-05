@@ -96,11 +96,11 @@ Repeat this block per PR. Record actual events, not planned approvals.
 - Human observations recorded before Copilot: Reviewed 5 November 2026, approximately 7:05 pm AEDT, before any Copilot use. Anish checked the acceptance criteria for both lookups: the original stored object is returned, an unknown valid ID raises LookupError, blank or invalid IDs raise ValueError, and lookup creates or modifies no records. He also checked the additional tests for trimming surrounding spaces and case-sensitive IDs, and found the implementation consistent with the criteria. His observations were supplied to me and entered by me on his behalf, as unit staff confirmed was acceptable.
 - Requirement, responsibilities, test assertions and unrelated-scope checks: Anish checked the implementation against the issue's acceptance criteria and reviewed the additional tests for trimming and case sensitivity.
 - Key feedback: The PR description did not include the test command, the test results or any significant AI assistance, so Anish could not verify that the tests had passed. He recommended adding that evidence.
-- Author response/change and verification: [response]
-- Reviewer recheck and approval: [link]
-- Merge outcome and SHA: [response]
-- Significant Copilot assistance: [summary or none]
-- Linked issue closure: [response]
+- Author response/change and verification: Following the review, the author addressed Copilot's two optional findings in commit 558b9d5. The preservation tests gained direct assertions for stored record fields, and incidental final-newline changes were corrected. The test suite was rerun from project/, with 26 tests passing. The PR description's test evidence and AI disclosure should also be updated as recommended.
+- Reviewer recheck and approval: Anish's confirmed recheck and approval https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
+- Merge outcome and SHA: is awaiting merge into main. Merge commit SHA will be recorded after merging.
+- Significant Copilot assistance: Copilot reviewed the PR diff, identified weaknesses in preservation-test assertions and flagged unrelated newline changes. The suggestions were checked and acted upon by the author.
+- Linked issue closure: https://github.com/shiven-uc/st1-assignment-3-group7/issues/1. Closure pending merge of PR #3.
 - Each member updated main: [member and confirmation]
 - Integrated verification after merge: [command, directory, result and code SHA]
 
@@ -108,28 +108,37 @@ Repeat this block per PR. Record actual events, not planned approvals.
 
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
-- Member and task: [response]
-- Prompt/purpose and relevant issue/diff: [response]
-- Summary of output: [response]
-- Human check against actual code, requirements and tests: [response]
-- Decision — Accept / Modify / Reject: [select]
-- Reason: [response]
-- Verification/evidence: [link and result]
+- Member and task: Shiven Mitra, Copilot review of PR #3 for Issue #1 (FR-02 lookup).
+- Prompt/purpose and relevant issue/diff: Used the Stage 6 Copilot review instructions to examine the acceptance criteria and the difference between main and feature/issue-1-patient-lookup, initially at commit 7ccfdfe.
+- Summary of output: Copilot considered the lookup implementation consistent with the requirements but raised two optional findings. First, the preservation tests compared lists containing the same object references, meaning changes to object fields might not be detected. Second, the diff contained unrelated final-newline changes. Copilot also stated that it had not executed the tests.
+- Human check against actual code, requirements and tests: The author inspected the preservation-test assertions and the diff. Both findings were considered valid. Direct assertions on record fields were added, and the incidental newline changes were corrected.
+- Decision — Accept / Modify / Reject: Modify the first suggestion and Accept the second.
+- Reason: The first suggestion was implemented using straightforward assertions on stored patient and practitioner fields rather than relying only on object-reference comparisons. The second was accepted because removing unrelated changes kept the PR focused.
+- Verification/evidence: Commit 558b9d5. Running python -m pytest from project/ produced 26 passing tests. The corrected diff was checked for the incidental newline changes.
 
 ## I Human versus Copilot review comparison
 
-- Human reviewer noticed before consulting Copilot: [response]
-- Copilot noticed: [response]
-- Overlap: [response]
-- What did the human reviewer notice that Copilot did not: [response]
-- What did Copilot identify that the human reviewer initially missed: [response]
-- Unsupported or incorrect Copilot suggestion: [response or none identified with explanation]
-- Human judgement accepted, modified or rejected, and why: [response]
-- Which evidence justified merge approval: [response]
+- Human reviewer noticed before consulting Copilot: Anish checked the lookup acceptance criteria, including stored-object identity, error handling, ID trimming and case sensitivity. He identified missing test results and AI disclosure in the PR description.
+- Copilot noticed: Copilot identified a weakness in the preservation tests because comparing collections of the same object references could miss changes to individual fields. It also identified incidental final-newline changes.
+- Overlap: Both reviews considered the lookup implementation consistent with the main FR-02 requirements. Both supported retaining the existing objects and validating lookup behaviour.
+- What did the human reviewer notice that Copilot did not: Anish noticed that the PR description lacked sufficient testing evidence and AI disclosure for a reviewer to verify the work.
+- What did Copilot identify that the human reviewer initially missed: Copilot identified the limitations of the preservation assertions and unrelated newline changes in the diff.
+- Unsupported or incorrect Copilot suggestion: None identified in the recorded findings. Copilot's suggestions were treated as recommendations requiring human verification, not automatically accepted changes.
+- Human judgement accepted, modified or rejected, and why: The author modified the first suggestion by adding explicit field assertions and accepted the second by correcting incidental formatting changes. Both decisions improved the reviewability and verification of the implementation without changing the required lookup behaviour.
+- Which evidence justified merge approval: Anish's human review confirmed that the FR-02 implementation satisfied the acceptance criteria for patient and practitioner lookup. The author addressed the identified review concerns, strengthened the preservation tests and removed unrelated formatting changes in commit 558b9d5. Running python -m pytest from project/ resulted in 26 passing tests. Final merge approval remains pending confirmation of Anish's recheck.
 
 ## J Contributions
 
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
+
+- Member: Shiven Mitra (shiven-uc), UG
+- Implementation: Implemented the FR-02 patient and practitioner lookup functionality in Issue #1, including valid ID lookup, error handling, whitespace trimming and case-sensitive matching. Evidence: PR #3, commit 7ccfdfe.
+- Testing: Developed and ran tests for valid, missing and invalid IDs, object identity and preservation of stored records. Strengthened preservation assertions following Copilot feedback. The test suite returned 26 passing tests.
+- Review: Responded to human reviewer feedback and evaluated Copilot's review suggestions, applying appropriate improvements in commit 558b9d5.
+- Issue refinement: Contributed to defining and implementing the FR-02 lookup requirements in Issue #1.
+- Design and responsibility discussion: Worked on service-layer lookup behaviour, including returning existing stored objects and raising the appropriate exceptions.
+- Debugging or integration: Corrected preservation-test weaknesses and removed unrelated formatting changes. Integration into main will be recorded after merging.
+- Documentation or team support: Prepared the PR description, recorded review evidence, documented human and Copilot feedback, and maintained the Stage 6 activity and evidence record.
 
 - Member: Anish Atamkur (anish32132), UG
 - Implementation: Not applicable so far.
@@ -139,66 +148,66 @@ Repeat per member. Include only categories that describe actual work; write not 
 - Design and responsibility discussion: Helped clarify the service-layer requirements and the expected error handling.
 - Debugging or integration: Not applicable so far.
 - Documentation or team support: Helped draft the team workflow agreement and commit message conventions, and gave feedback on the PR description.
-- Documentation or team support: [work and evidence]
+
 
 ## K Exit question
 
 Why is a high commit count not necessarily evidence of strong contribution?
 
-[response]
+A high commit count does not necessarily mean someone made a strong contribution because commits can vary significantly in size, complexity and importance. Someone might make many small changes, while another person makes fewer commits that involve substantial implementation, testing or problem solving. Strong contributions should be judged by the quality and impact of the work, including code, testing, reviews, documentation and teamwork, rather than just the number of commits.
 
 ## L Stage 6 formative questions
 
 1. What is version control?
 
-[response]
+Version control is a system that tracks changes made to files over time. It allows developers to see previous versions, restore changes when needed and collaborate on the same project without losing work.
 
 2. Why is a feature branch useful?
 
-[response]
+A feature branch allows developers to work on a specific feature or issue without directly changing the main branch. This keeps the main version stable while changes are developed, tested and reviewed.
 
 3. What makes a commit a good engineering commit?
 
-[response]
+A good engineering commit contains a focused, meaningful change with a clear commit message explaining what was done. It should avoid unrelated changes and ideally leave the code working and tested.
 
 4. What is a pull request?
 
-[response]
+A pull request is a request to merge changes from one branch into another, usually into main. It allows team members to inspect the code, discuss changes, review tests and provide feedback before merging.
 
 5. What is the purpose of code review?
 
-[response]
+Code review helps identify bugs, check that requirements are met, improve code quality and ensure changes are understandable and maintainable. It also allows team members to share knowledge and provide feedback.
 
 6. What does a Git diff show?
 
-[response]
+A Git diff shows the differences between versions of files or branches. It highlights lines that have been added, removed or modified, allowing developers and reviewers to see exactly what changed.
 
 7. What is a Definition of Done?
 
-[response]
+A Definition of Done is a set of agreed conditions that must be satisfied before work is considered complete. These can include meeting acceptance criteria, passing tests, completing code review and updating documentation.
 
 8. What is the appropriate role of GitHub Copilot in pull-request review?
 
-[response]
+GitHub Copilot should be used as a supporting review tool to identify possible bugs, missing tests or improvements. Its suggestions must be checked against the actual code and requirements by a human. Copilot should not replace human review or make the final approval decision.
 
 9. Why should individual contribution not be judged only by commit count?
 
-[response]
+Commit count does not measure the quality, difficulty or importance of someone's work. A person may make fewer commits but contribute significant implementation, testing or reviews. Contributions should be assessed using actual evidence of work and its impact.
 
 10. What is the Stage 6 engineering rule?
 
-[response]
+Changes should be developed on a feature branch, supported by appropriate tests and evidence, reviewed by another team member and checked before merging into main. Copilot can assist with review, but human judgement and verification are still required.
 
 ## M Completion and handover
 
-- Starting SHA: [response]
+- Starting SHA: a597bfc (original SmartCare starter commit).
 - Final Stage 6 code SHA: [response]
-- Test command: [response]
-- Working directory: [response]
-- Observed result: [response]
-- PR and another-member reviewer: [links]
-- Unresolved issue or none: [response]
-- Stage 7 handover status: [ready for tutor checkpoint / unresolved work]
+- Test command: python -m pytest
+- Working directory:  project/
+- Observed result: 26 tests passed on the feature branch. Integrated test result on main pending.
+- PR and another-member reviewer: PR #3 — reviewed by Anish Atamkur (anish32132) https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
+- Unresolved issue or none: Final merge, integrated verification and confirmation of Issue #1 closure pending.
+- Stage 7 handover status: Unresolved work, final integration checks pending.
 - Final submitted SHA if later than tested SHA: [response and evidence-only difference]
 
 - [ ] Three Stage 6 service targets completed and checked.
