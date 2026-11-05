@@ -134,11 +134,12 @@ Repeat per member. Include only categories that describe actual work; write not 
 - Member: Anish Atamkur (anish32132), UG
 - Implementation: Not applicable so far.
 - Testing: Helped develop test scenarios for valid, missing and blank IDs (see the acceptance criteria in issue #1).
-- Review: Reviewed the issue #1 lookup PR on 5 November 2026 (about 7:05 pm AEDT), checked each acceptance criterion and the extra trimming and case-sensitivity tests, and gave feedback on missing test evidence.
+- Review: Reviewed the issue #1 lookup , checked each acceptance criterion and the extra trimming and case-sensitivity tests, and gave feedback on missing test evidence.
 - Issue refinement: Helped refine the FR-02 patient and practitioner lookup issue.
 - Design and responsibility discussion: Helped clarify the service-layer requirements and the expected error handling.
 - Debugging or integration: Not applicable so far.
 - Documentation or team support: Helped draft the team workflow agreement and commit message conventions, and gave feedback on the PR description.
+- Documentation or team support: [work and evidence]
 
 ## K Exit question
 
