@@ -100,9 +100,8 @@ Repeat this block per PR. Record actual events, not planned approvals.
 - Reviewer recheck and approval: Anish's confirmed recheck and approval https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
 - Merge outcome and SHA: PR #3 successfully merged into main. Merge commit SHA: 2eb256b3e7d22967dee6fced3b3214c103c1a54b.
 - Significant Copilot assistance: Copilot reviewed the PR diff, identified weaknesses in preservation-test assertions and flagged unrelated newline changes. The suggestions were checked and acted upon by the author.
-- Linked issue closure: https://github.com/shiven-uc/st1-assignment-3-group7/issues/1. Closure pending merge of PR #3.
-- Each member updated main: [member and confirmation]
-- Integrated verification after merge: Ran `python -m pytest` from `project/` on updated main; all 26 tests passed in 0.14 seconds.
+- Linked issue closure:  Issue #1 was linked to PR #3. Its closure status must be confirmed on GitHub. https://github.com/shiven-uc/st1-assignment-3-group7/issues/1.
+- Integrated verification after merge: Shiven updated local main using git pull --ff-only, then ran python -m pytest from project/. All 26 tests passed in 0.14 seconds.
 
 ## H Copilot collaboration record
 
@@ -125,7 +124,7 @@ Record meaningful required use, not every trivial completion. Repeat per signifi
 - What did Copilot identify that the human reviewer initially missed: Copilot identified the limitations of the preservation assertions and unrelated newline changes in the diff.
 - Unsupported or incorrect Copilot suggestion: None identified in the recorded findings. Copilot's suggestions were treated as recommendations requiring human verification, not automatically accepted changes.
 - Human judgement accepted, modified or rejected, and why: The author modified the first suggestion by adding explicit field assertions and accepted the second by correcting incidental formatting changes. Both decisions improved the reviewability and verification of the implementation without changing the required lookup behaviour.
-- Which evidence justified merge approval: Anish's human review confirmed that the FR-02 implementation satisfied the acceptance criteria for patient and practitioner lookup. The author addressed the identified review concerns, strengthened the preservation tests and removed unrelated formatting changes in commit 558b9d5. Running python -m pytest from project/ resulted in 26 passing tests. Final merge approval remains pending confirmation of Anish's recheck.
+- Which evidence justified merge approval: Anish reviewed the implementation against the FR-02 acceptance criteria and confirmed his approval after the feedback was addressed. The final changes included stronger preservation tests and removal of unrelated newline changes. The full test suite passed with 26 tests. Anish's approval was documented in a GitHub comment posted by Shiven on Anish's behalf.
 
 ## J Contributions
 
@@ -206,9 +205,9 @@ Changes should be developed on a feature branch, supported by appropriate tests 
 - Working directory: `project/`
 - Observed result: 26 tests passed in 0.14 seconds on updated main.
 - PR and another-member reviewer: PR #3 — reviewed by Anish Atamkur (anish32132) https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
-- Unresolved issue or none: Final merge, integrated verification and confirmation of Issue #1 closure pending.
-- Stage 7 handover status: Pending final Stage 6 documentation integration and remaining checklist verification.
-- Final submitted SHA if later than tested SHA: [response and evidence-only difference]
+- Unresolved issue or none: PR #3 has been merged and integrated verification passed (26 tests). Confirmation of Issue #1 closure, Anish's separate integrated verification, and integration of the Stage 6 documentation PR #4 remain outstanding.
+- Stage 7 handover status: Stage 6 code has been merged and verified. Stage 7 handover is pending final integration of the Stage 6 evidence document and confirmation of the remaining checklist items.
+- Final submitted SHA if later than tested SHA: The tested code SHA is 2eb256b3e7d22967dee6fced3b3214c103c1a54b. Documentation commit 459e242 records later evidence changes on branch docs/stage06-record. The final integrated submission SHA will be recorded after PR #4 is merged. These documentation changes do not modify the tested application code.
 
 - [ ] Three Stage 6 service targets completed and checked.
 - [ ] Original supplied tests retained and passing.
