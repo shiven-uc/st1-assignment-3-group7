@@ -62,6 +62,8 @@ def test_find_patient_does_not_create_or_change_records() -> None:
         patients.find_patient('P2')
     patients.find_patient('P1')
     assert patients.data_store.list_patients() == before == [patient]
+    assert patient.patient_id == 'P1'
+    assert patient.name == 'Alex Example'
 
 
 # --- FR-02 supporting: practitioner lookup ---------------------------------
@@ -128,3 +130,7 @@ def test_find_practitioner_does_not_create_or_change_records() -> None:
     assert practitioners.data_store.list_practitioners() == before == [
         practitioner,
     ]
+    assert practitioner.practitioner_id == 'D1'
+    assert practitioner.name == 'Taylor Example'
+    assert practitioner.specialty == 'General practice'
+    
