@@ -98,11 +98,11 @@ Repeat this block per PR. Record actual events, not planned approvals.
 - Key feedback: The PR description did not include the test command, the test results or any significant AI assistance, so Anish could not verify that the tests had passed. He recommended adding that evidence.
 - Author response/change and verification: Following the review, the author addressed Copilot's two optional findings in commit 558b9d5. The preservation tests gained direct assertions for stored record fields, and incidental final-newline changes were corrected. The test suite was rerun from project/, with 26 tests passing. The PR description's test evidence and AI disclosure should also be updated as recommended.
 - Reviewer recheck and approval: Anish's confirmed recheck and approval https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
-- Merge outcome and SHA: is awaiting merge into main. Merge commit SHA will be recorded after merging.
+- Merge outcome and SHA: PR #3 successfully merged into main. Merge commit SHA: 2eb256b3e7d22967dee6fced3b3214c103c1a54b.
 - Significant Copilot assistance: Copilot reviewed the PR diff, identified weaknesses in preservation-test assertions and flagged unrelated newline changes. The suggestions were checked and acted upon by the author.
 - Linked issue closure: https://github.com/shiven-uc/st1-assignment-3-group7/issues/1. Closure pending merge of PR #3.
 - Each member updated main: [member and confirmation]
-- Integrated verification after merge: [command, directory, result and code SHA]
+- Integrated verification after merge: Ran `python -m pytest` from `project/` on updated main; all 26 tests passed in 0.14 seconds.
 
 ## H Copilot collaboration record
 
@@ -201,13 +201,13 @@ Changes should be developed on a feature branch, supported by appropriate tests 
 ## M Completion and handover
 
 - Starting SHA: a597bfc (original SmartCare starter commit).
-- Final Stage 6 code SHA: [response]
-- Test command: python -m pytest
-- Working directory:  project/
-- Observed result: 26 tests passed on the feature branch. Integrated test result on main pending.
+- Final Stage 6 code SHA: 2eb256b3e7d22967dee6fced3b3214c103c1a54b
+- Test command: `python -m pytest`
+- Working directory: `project/`
+- Observed result: 26 tests passed in 0.14 seconds on updated main.
 - PR and another-member reviewer: PR #3 — reviewed by Anish Atamkur (anish32132) https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
 - Unresolved issue or none: Final merge, integrated verification and confirmation of Issue #1 closure pending.
-- Stage 7 handover status: Unresolved work, final integration checks pending.
+- Stage 7 handover status: Pending final Stage 6 documentation integration and remaining checklist verification.
 - Final submitted SHA if later than tested SHA: [response and evidence-only difference]
 
 - [ ] Three Stage 6 service targets completed and checked.
