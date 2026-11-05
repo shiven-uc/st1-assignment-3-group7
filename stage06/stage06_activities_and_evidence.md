@@ -103,6 +103,24 @@ Repeat this block per PR. Record actual events, not planned approvals.
 - Linked issue closure:  Issue #1 was linked to PR #3. Its closure status must be confirmed on GitHub. https://github.com/shiven-uc/st1-assignment-3-group7/issues/1.
 - Integrated verification after merge: Shiven updated local main using git pull --ff-only, then ran python -m pytest from project/. All 26 tests passed in 0.14 seconds.
 
+### PR #5 — Appointment cancellation (FR-06/FR-07)
+
+- PR link and title: https://github.com/shiven-uc/st1-assignment-3-group7/pull/5 — Implement appointment cancellation (FR-06/FR-07)
+- Linked issue and requirement: Issue #2 — Appointment cancellation (FR-06/FR-07).
+- Feature branch: feature/issue-2-appointment-cancellation
+- Changed behaviour: AppointmentService.cancel_appointment now retrieves the existing appointment, calls its domain cancel() method and returns the same object. Cancelled appointments remain stored. Unknown IDs raise LookupError, while invalid IDs and repeated cancellation raise ValueError.
+- Meaningful commits: Cancellation implementation and automated tests were committed on the feature branch before PR #5 was created. The exact feature commit SHA can be retrieved from PR #5.
+- Test command, directory and observed result: python -m pytest, run from project/. All 34 tests passed locally.
+- Another-member reviewer: anish32132 (Anish Atamkur).
+- Human observations: Anish reviewed the cancellation implementation and tests, including use of the domain method, retained appointment history and rejection of invalid operations.
+- Key feedback: Anish confirmed approval of the cancellation changes. No additional requested changes were reported.
+- Author response and verification: Shiven recorded Anish's communicated approval in a GitHub comment because Anish could not submit a formal review due to connection issues. The full test suite passed with 34 tests.
+- Reviewer recheck and approval: Anish's approval was documented by Shiven in a comment on PR #5, rather than submitted as a formal GitHub review from Anish's account.
+- Merge outcome and SHA: PR #5 was successfully merged into main. Integrated code SHA: eba031e6f66f8c736ab52220e96437df523506d0.
+- Significant Copilot assistance: No additional Copilot review has been reported for PR #5.
+- Linked issue closure: Issue #2 was linked to PR #5. Its closure status should be confirmed on GitHub.
+- Integrated verification after merge: Shiven updated local main using git pull --ff-only, then ran python -m pytest from project/. All 34 tests passed in 0.11 seconds.
+
 ## H Copilot collaboration record
 
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
@@ -200,21 +218,21 @@ Changes should be developed on a feature branch, supported by appropriate tests 
 ## M Completion and handover
 
 - Starting SHA: a597bfc (original SmartCare starter commit).
-- Final Stage 6 code SHA: 2eb256b3e7d22967dee6fced3b3214c103c1a54b
-- Test command: `python -m pytest`
-- Working directory: `project/`
-- Observed result: 26 tests passed in 0.14 seconds on updated main.
-- PR and another-member reviewer: PR #3 — reviewed by Anish Atamkur (anish32132) https://github.com/shiven-uc/st1-assignment-3-group7/pull/3#issuecomment-6660698047
-- Unresolved issue or none: PR #3 has been merged and integrated verification passed (26 tests). Confirmation of Issue #1 closure, Anish's separate integrated verification, and integration of the Stage 6 documentation PR #4 remain outstanding.
-- Stage 7 handover status: Stage 6 code has been merged and verified. Stage 7 handover is pending final integration of the Stage 6 evidence document and confirmation of the remaining checklist items.
-- Final submitted SHA if later than tested SHA: The tested code SHA is 2eb256b3e7d22967dee6fced3b3214c103c1a54b. Documentation commit 459e242 records later evidence changes on branch docs/stage06-record. The final integrated submission SHA will be recorded after PR #4 is merged. These documentation changes do not modify the tested application code.
+- Final Stage 6 code SHA: eba031e6f66f8c736ab52220e96437df523506d0
+- Test command: python -m pytest
+- Working directory: project/
+- Observed result: 34 tests passed in 0.11 seconds on updated main.
+- PR and another-member reviewer: PR #3 (FR-02 lookup) and PR #5 (FR-06/FR-07 cancellation), both reviewed by Anish Atamkur (anish32132). Anish's communicated approvals were documented by Shiven in GitHub comments.
+- Unresolved issue or none: Both feature PRs have been merged, and integrated verification passed with 34 tests. Confirmation of Issues #1 and #2 closure, Anish's separate integrated verification, and integration of documentation PR #4 remain outstanding.
+- Stage 7 handover status: All three Stage 6 service targets have been implemented and verified on main. Final documentation integration and confirmation of the remaining checklist items are pending.
+- Final submitted SHA if later than tested SHA: Tested code SHA is eba031e6f66f8c736ab52220e96437df523506d0. Documentation commit 496932b9e8df0ebc7e2d0baf70deacad9f582abf records earlier evidence changes on docs/stage06-record. The final integrated submission SHA will be determined after PR #4 is merged. Documentation-only changes do not alter the tested application code.
 
-- [ ] Three Stage 6 service targets completed and checked.
-- [ ] Original supplied tests retained and passing.
-- [ ] At least two focused issues link requirements and acceptance criteria.
-- [ ] Feature work reviewed by another member using the actual diff.
-- [ ] Human-first review and required Copilot comparison recorded.
-- [ ] Feedback resolved and approval recorded before merge.
+- [x] Three Stage 6 service targets completed and checked.
+- [x] Original supplied tests retained and passing.
+- [x] At least two focused issues link requirements and acceptance criteria.
+- [x] Feature work reviewed by another member using the actual diff.
+- [x] Human-first review and required Copilot comparison recorded.
+- [x] Feedback resolved and approval recorded before merge.
 - [ ] Everyone pulled main and integrated checks passed.
 - [ ] Required activities, quiz responses and contribution notes completed.
 - [ ] Only synthetic data included; confidential peer material kept out.
