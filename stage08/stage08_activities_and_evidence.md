@@ -116,18 +116,18 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 - Clean preparation SHA if a record-only commit followed Stage 7: d04140802ab76657208ca54169c053a0036008e7. This commit records the Stage 8 tutorial and baseline before fault preparation. The --check preflight passed at this SHA.
 - Branch and preparer / how teammates obtained this branch: stage08-debugging, prepared locally by Shiven. Teammate branch access or transfer pending.
 - Downloaded tool version, source SHA256 and --check outcome: Stage 8 preparation tool v1.1. Baseline source SHA256: b4a1993e878c59a9df5e9055320702b2d318c5b6055bb1693a3afc25cd8fd375. --check passed; the project remained unchanged, and both proposed fault signatures were verified in a temporary copy.
-- --apply and --verify output summaries / artefact references: [complete]
-- Bounded diff inspected and recovery location (not committed): [complete]
-- Prepared faulty-state commit SHA: [complete]
-- Preparation or recovery issues and resolution, if any: [complete]
-- Initial prepared full-suite command / result / key failures: [complete]
+- --apply and --verify output summaries / artefact references: Stage 8 tool v1.1 successfully applied F8-01 and F8-02. The --apply command verified two expected failing fault signatures. The separate --verify command confirmed exactly two expected failures and both approved symptoms.
+- Bounded diff inspected and recovery location (not committed): Inspected git --no-pager diff -- smartcare/data_store.py. The tool modified find_appointment() and has_practitioner_conflict(). Recovery information was recorded in .stage8_faults, which must not be committed.
+- Prepared faulty-state commit SHA: Pending output of git rev-parse HEAD after the faulty-state commit.
+- Preparation or recovery issues and resolution, if any: No preparation errors occurred. The LF/CRLF messages were Git line-ending warnings, not preparation failures. Recovery was not required.
+- Initial prepared full-suite command / result / key failures: python -m pytest -q from project/: 43 passed, 7 failed in 0.20s. Key failures involved same-practitioner conflicts not being rejected, different-practitioner bookings being rejected incorrectly, and cancelled appointments becoming unavailable through lookup. These failures are consistent with F8-01 and F8-02.
 
 ## C. F8-01 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
+- Symptom / observed behaviour: SmartCare incorrectly allows two SCHEDULED appointments for the same practitioner at the same time, while rejecting appointments for different practitioners at that time.
+- Expected behaviour and requirement: FR-05 / AC-04.1 requires a conflicting SCHEDULED appointment for the same practitioner and exact time to be rejected. AC-04.2 allows different practitioners to have appointments at the same time.
+- Minimal synthetic reproduction steps: Register two patients and practitioners D1 and D2. Book A1 with D1 at 9:00 AM. Attempt A2 with D1 at 9:00 AM, then separately test booking A2 with D2 at 9:00 AM using fresh store state.
+- Meaningful failing test path/name and exact relevant failure: tests/test_stage07.py::test_same_practitioner_time_conflict — Failed: DID NOT RAISE ValueError at line 83. Also, tests/test_stage07.py::test_different_practitioners_same_time — unexpected ValueError: Practitioner already has a SCHEDULED appointment at this time.
 - Human hypothesis and intended checks: see E, F8-01.
 - Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
 - Smallest justified fix / diff / why other behaviour is preserved: [complete]
@@ -135,10 +135,10 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 ## D. F8-02 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
+- Symptom / observed behaviour: After cancellation, an appointment becomes unavailable through service lookup. Repeated cancellation also raises LookupError instead of ValueError.
+- Expected behaviour and requirement: FR-07 / AC-05.2 requires cancelled appointments to remain stored and retrievable. FR-06 / AC-05.3 requires repeated cancellation to be rejected with ValueError.
+- Minimal synthetic reproduction steps: Register a patient and practitioner, book appointment A1, cancel A1, then attempt to retrieve A1. Attempt to cancel A1 again and check the exception.
+- Meaningful failing test path/name and exact relevant failure: tests/test_stage07.py::test_cancelled_appointment_retained — LookupError: Appointment not found at smartcare/services.py:136. Also, tests/test_stage07.py::test_repeated_cancellation_rejected — expected ValueError but received LookupError.
 - Human hypothesis and intended checks: see E, F8-02.
 - Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
 - Smallest justified fix / diff / why other behaviour is preserved: [complete]
@@ -149,14 +149,14 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/test; retain those initial facts and link them here.
 
 ### F8-01 human entry
-Likely cause and why plausible: [complete]
-Evidence intended to inspect / competing explanation / discriminating check: [complete]
-Member and saved sequence/time or commit showing this preceded consultation: [complete]
+Likely cause and why plausible: The practitioner conflict check may be comparing practitioner IDs incorrectly. The tests show that bookings for the same practitioner are incorrectly allowed, while bookings for different practitioners are rejected.
+Evidence intended to inspect / competing explanation / discriminating check:  Inspect SmartCareDataStore.has_practitioner_conflict() and its practitioner ID, time and status comparisons. An alternative explanation is that AppointmentService.book_appointment() passes the wrong practitioner ID. Compare the service arguments with the stored appointment details to distinguish these possibilities.
+Member and saved sequence/time or commit showing this preceded consultation: Shiven. Hypothesis recorded after the initial failing tests and before consulting GitHub Copilot. Documentation commit pending.
 
 ### F8-02 human entry
-Likely cause and why plausible: [complete]
-Evidence intended to inspect / competing explanation / discriminating check: [complete]
-Member and saved sequence/time or commit showing this preceded consultation: [complete]
+Likely cause and why plausible: The appointment lookup method may incorrectly exclude appointments with CANCELLED status. The tests show that cancelled appointments become unavailable through lookup.
+Evidence intended to inspect / competing explanation / discriminating check: Inspect SmartCareDataStore.find_appointment() and compare the result with list_appointments(). An alternative explanation is that cancellation removes the appointment from storage. Check whether the appointment is still in the stored list after cancellation.
+Member and saved sequence/time or commit showing this preceded consultation: Shiven. Hypothesis recorded after the initial failing tests and before consulting GitHub Copilot. Documentation commit pending.
 
 ## F. GitHub Copilot prompts, findings and human decisions
 
