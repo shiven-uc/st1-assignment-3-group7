@@ -242,45 +242,46 @@ Record actual work in test design, implementation, review, traceability, diagnos
 
 | Member | Actual contribution | Evidence link |
 |---|---|---|
-| [complete] | [complete] | [complete] |
+| Shiven | Designed and implemented 9 Stage 7 service tests and 6 domain test functions (7 test executions). Completed requirement-to-test traceability, evaluated Copilot suggestions, ran the regression suite (50 passed), prepared Stage 7 documentation and managed PR #6. | [PR #6](https://github.com/shiven-uc/st1-assignment-3-group7/pull/6) |
+| Anish Atamkur | Reviewed Stage 7 testing work and provided feedback on test coverage, including suggestions for additional date/time and participant validation cases. | [PR #6 – Conversation](https://github.com/shiven-uc/st1-assignment-3-group7/pull/6) |
 
 ## N Formative Questions
 
 1. What question does verification answer?
-[response]
+Verification asks, "Are we building the product correctly?" It checks whether the software meets its specified requirements and design.
 
 2. What question does validation answer?
-[response]
+Validation asks, "Are we building the right product?" It checks whether the software meets the user's actual needs and intended purpose.
 
 3. What is a unit test?
-[response]
+A unit test checks a small, individual part of a program, such as a function or method, to confirm that it behaves as expected.
 
 4. What is a pytest fixture?
-[response]
+A pytest fixture provides reusable setup for tests, such as creating a fresh data store or sample objects. It helps reduce duplicated setup code and keeps tests independent.
 
 5. What is parametrisation in pytest?
-[response]
+Parametrisation allows the same test function to run with multiple sets of inputs. For example, I used @pytest.mark.parametrize to test both a blank patient ID and a blank patient name.
 
 6. What is regression testing?
-[response]
+Regression testing involves rerunning existing tests after changes to ensure previously working functionality has not been broken. My SmartCare regression run passed all 50 tests.
 
 7. What does code coverage tell us, and what does it not prove?
-[response]
+Code coverage measures how much code is executed during testing. It does not prove that the software is correct, that assertions are meaningful, or that every requirement has been tested.
 
 8. What makes an assertion weak?
-[response]
+An assertion is weak when it does not meaningfully check the required behaviour. For example, checking only that an appointment object exists would be weaker than checking its ID, status and stored details.
 
 9. What is the appropriate role of GitHub Copilot as a test assistant?
-[response]
+GitHub Copilot can suggest test cases, identify possible boundary conditions and help improve assertions. However, developers must check its suggestions against the actual requirements, reject invented rules and verify any generated tests before accepting them.
 
 10. What is the Stage 7 engineering rule?
-[response]
+Tests must be based on real requirements, use meaningful assertions and provide trustworthy verification evidence. AI-generated suggestions must be critically reviewed rather than automatically accepted, and test results must only be reported after execution.
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: [complete]
-Full-suite result: [complete]
-Unresolved defects and effect on baseline: [complete or none]
-Clean working tree and integration evidence: [complete]
-Stage 8 handover status: [complete; no Stage 8 work assigned]
-All tutorial/formative responses and traceability/Copilot decisions complete: [confirm]
+Tested Stage 7 main SHA: Pending merge and final verification. The previously tested baseline SHA was 2d991d7f62069729a4fb2e85f4d3f6c624e2e735, with Stage 7 changes in the working tree.
+Full-suite result: 50 passed, 0 failed. Verified locally using python -m pytest -q from project/.
+Unresolved defects and effect on baseline: None identified by the executed tests. All 50 tests passed. Additional boundary coverage remains possible, as documented in Section K.
+Clean working tree and integration evidence: Stage 7 changes submitted through PR #6. Final merge, clean working-tree verification and integrated main regression run pending.
+Stage 8 handover status: Stage 7 tests and documentation prepared for integration. No Stage 8 work assigned.
+All tutorial/formative responses and traceability/Copilot decisions complete: Sections A–N completed, including requirement-to-test traceability, human-first test design, actual Copilot suggestions and critical evaluation.
