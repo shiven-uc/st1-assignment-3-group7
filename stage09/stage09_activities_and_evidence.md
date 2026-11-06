@@ -118,9 +118,9 @@ What the tests do and do not establish: <!-- response -->
 
 | Scenario / acceptance ID | Reproducible inputs / artefact | Expected result | Observed result and state check | Evidence link |
 |---|---|---|---|---|
-| UI-01 full menu workflow | | | | |
-| UI-02 invalid-input recovery | | | | |
-| Automated service workflow | | | | |
+| UI-01 full menu workflow | `python main.py --interactive`; registered P1, D1/D2; booked A1, attempted conflicting booking, booked A2, cancelled A1, retrieved and filtered appointments, then booked A3 | Registration and lookup succeed; same-practitioner conflict is rejected; different-practitioner booking succeeds; cancelled history is retained; freed slot can be reused | Manually verified: all scenarios behaved as expected, although console message wording differed from the examples. A1 remained CANCELLED and A3 booked successfully. | Manual terminal run; GitHub link to be added |
+| UI-02 invalid-input recovery | `python main.py --interactive`; invalid menu choice 99, blank patient ID, unknown P999, duplicate P1, impossible date 2026-02-30, malformed date, unknown A999, invalid status banana, repeated cancellation and valid A1 retry | Invalid inputs are rejected without terminating the session or creating partial records; valid actions still succeed afterward | Manual testing completed. Terminal output confirmed errors for menu choice, blank/unknown/duplicate patient IDs and invalid dates. Remaining cases were reported completed; exact output not separately captured. | Manual terminal evidence; GitHub link pending |
+| Automated service workflow | `python -m pytest tests/test_workflows.py -v`; `tests/test_workflows.py` | Verify booking, conflict rejection, different-practitioner booking, cancellation history, filtering, freed-slot reuse and unchanged state after rejected operations | PASS — 3 workflow tests passed. Full regression: 71 passed, 0 failed. Tests verified stored-object identity, cancellation history and rejected-booking state preservation. | `project/tests/test_workflows.py`; GitHub link pending |
 
 Include registration/find, booking, conflict rejection, different-practitioner booking, cancellation, retrieval, listing/filtering, freed slot and exit; duplicate/unknown/blank IDs, malformed/impossible date, invalid status, unknown choice and repeated cancellation. Identify before/after state and subsequent successful action.
 
