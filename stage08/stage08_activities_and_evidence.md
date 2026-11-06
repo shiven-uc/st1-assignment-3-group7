@@ -201,14 +201,14 @@ Result — accepted, revised or rejected / reason / behaviour-preservation concl
 
 ## I. Git, human review and integration
 
-Issues for both defects / refactor scope and owners: [complete]
-Branch / prepared, repair and refactor checkpoints: [link B/C/D/H]
-PR link and another member's reviewer identity: [complete]
-Key human feedback, difference from Copilot findings and response/outcome: [complete]
-Actual review approval / merge evidence: [complete]
-Integrated code SHA and team pull/retest command / working directory / result: [complete]
-Evidence-only later SHA / explanation if different: [complete or not applicable]
-Each member's substantive contribution and artefact: [complete]
+Issues for both defects / refactor scope and owners: F8-01 — repair incorrect practitioner conflict detection (Shiven). F8-02 — restore cancelled appointment lookup (Shiven). Refactoring — replace the hardcoded scheduled-status string with the existing enum (Shiven). GitHub issue links pending; do not claim separate issues were created.
+Branch / prepared, repair and refactor checkpoints: stage08-debugging. Prepared faulty state: 2592cce. Human-first hypotheses: d53e1b6. F8-01 repair: 9e8b98e. F8-02 repair: b9ee2de. Separate refactoring: 63feabb4a27620344a6dd1ea82d3f23a13c1f7ec. See Sections B, C, D and H.
+PR link and another member's reviewer identity: Pending Stage 8 pull request. Anish Atamkur is the intended human reviewer; review not yet confirmed.
+Key human feedback, difference from Copilot findings and response/outcome: Pending actual human review. Copilot identified the inverted practitioner comparison and cancelled-appointment lookup filter as the leading causes; human review feedback will be recorded separately.
+Actual review approval / merge evidence: No Stage 8 review approval or merge recorded yet.
+Integrated code SHA and team pull/retest command / working directory / result: Pending merge into main. Current refactoring branch passed python -m pytest -q from project/ with 50 passed, 0 failed.
+Evidence-only later SHA / explanation if different: Not applicable yet. Update if a documentation-only commit follows the final integrated code SHA.
+Each member's substantive contribution and artefact: Shiven; inspected the actual faults, recorded human-first hypotheses, evaluated Copilot diagnoses, implemented both repairs, performed the refactoring, ran verification tests and maintained the Stage 8 evidence record. Evidence: commits d53e1b6, 9e8b98e, b9ee2de and 63feabb. Anish; human review pending; record his actual feedback and contribution once received.
 
 ## J. Required reflections
 
