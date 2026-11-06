@@ -14,51 +14,106 @@ Use concise results and accessible artefact links rather than copying entire log
 
 ### A.1 Classify all five statements
 For each, choose symptom, evidence or hypothesis/opinion, and explain your reason. These are discussion statements, not confirmed diagnoses.
-- Appointment disappears after cancellation.
-- The data-store removal path is probably being called.
-- The failing test shows store.find_appointment('A1') returns None.
-- The service layer is badly designed.
-- Traceback points to smartcare/services.py line 42 in the example.
-The example line number is illustrative; inspect the actual line in your run. The removal hypothesis must be tested against the current project, which has no public delete operation.
 
-Response and reason: [complete]
+Response and reason:
+- Appointment disappears after cancellation. - Symptom. This describes unexpected behaviour but does not identify its cause. FR-07 requires cancelled appointments to remain retrievable.
+- The data-store removal path is probably being called. - Hypothesis. This suggests a possible explanation that needs investigation. It has not been confirmed by code inspection or test results, and the current data store has no public delete operation.
+- The failing test shows store.find_appointment('A1') returns None. - Evidence. This describes an observable test result that can help confirm the symptom, assuming it was actually recorded during a test.
+- The service layer is badly designed. - Opinion. This is a subjective judgement without specific evidence identifying a defect.
+- Traceback points to smartcare/services.py line 42 in the example. - Evidence. A traceback identifies where an error was reported and helps guide investigation. The example line number is illustrative, not a confirmed location in our code.
+The example line number is illustrative; inspect the actual line in your run. The removal hypothesis must be tested against the current project, which has no public delete operation.
 
 ### A.2 Build a debugging record
 Choose the cancelled-history scenario or a same-practitioner/time booking. Before changing code, record expected behaviour, observed behaviour, minimal reproduction, a hypothesis and evidence to inspect. Use a requirement to justify the expectation. Keep the initial hypothesis even if later evidence disproves it.
 
-Response and reason: [complete]
+Response and reason:
+
+- Scenario: Cancelled appointment history (FR-07 / AC-05.2).
+
+- Expected behaviour: Cancelling a SCHEDULED appointment changes its status to CANCELLED, but the appointment remains stored and retrievable using its appointment ID.
+
+- Observed behaviour: No failure observed in the current baseline. The full regression suite passed 50 tests. The disappearance scenario is hypothetical until the Stage 8 faulty state is prepared.
+
+- Minimal reproduction: Register a patient and practitioner, book appointment A1, cancel A1, then retrieve A1 from the data store and check its status.
+
+- Initial hypothesis: If the appointment disappears after cancellation, the cancellation operation may be incorrectly removing or replacing the stored record rather than preserving it with CANCELLED status.
+
+- Evidence to inspect: The failing test assertion, actual retrieved value, cancellation service and domain methods, appointment storage logic, and traceback. Compare these against FR-07 / AC-05.2.
 
 ### A.3 Test defect or product defect
 A test expects cancelled appointments to be deleted, but FR-07 says history must be retained. What should be changed? Explain why. Also decide whether a test expecting different practitioners at the same time to conflict reflects AC-04.2. Do not assume every failing test is correct.
 
-Response and reason: [complete]
+Response and reason: 
+
+Response and reason:
+
+Scenario 1 — Test expects cancelled appointments to be deleted:
+
+This is a test defect, not a product defect. FR-07 requires cancelled appointments to remain stored and retrievable. The test should be corrected to expect the appointment to remain in the data store with CANCELLED status. The application should not be changed to satisfy an incorrect test.
+
+Scenario 2 — Test expects different practitioners at the same time to conflict:
+
+This is also a test defect because AC-04.2 explicitly allows different practitioners to have appointments at the same time. The test should be updated to expect both bookings to succeed, provided all other booking requirements are satisfied.
+
+Conclusion: Tests must reflect the actual requirements. A failing test does not automatically mean the application code is wrong.
 
 ### A.4 Refactoring smell hunt
 Consider a hypothetical 70-line AppointmentService method containing duplicate status strings, direct collection manipulation, printing, validation and four nested conditionals. Identify the smells and propose small refactorings that preserve required behaviour. The direct collection work replaces the old storage-specific scenario; use the existing SmartCareDataStore boundary. Do not implement an extra architecture.
 Classify these proposed changes as refactoring, repair or feature: rename appt to appointment; extract a repeated conflict helper; add rescheduling; restore retained cancellation lookup; replace a magic status string with the existing enum. Explain the behaviour that must remain unchanged.
 
-Response and reason: [complete]
+Response and reason:
+
+The hypothetical 70-line AppointmentService method contains several code smells:
+- Long method: Too many responsibilities are handled in one method.
+- Duplicated code: Repeated status checks and validation make maintenance harder.
+- Magic strings: Using status strings instead of the existing AppointmentStatus enum increases the risk of mistakes.
+- Deep nesting: Four nested conditionals make the logic difficult to understand.
+- Mixed responsibilities: Validation, storage operations and printing are combined.
+
+Small refactorings could include extracting repeated conflict-checking logic into a helper, replacing status strings with the existing enum, using clearer variable names and simplifying nested conditions. These changes should preserve the existing SmartCare behaviour and continue using the SmartCareDataStore boundary.
+
+Classification of proposed changes:
+- Rename appt to appointment - Refactoring, because it improves readability without changing behaviour.
+- Extract a repeated conflict helper - Refactoring, because it removes duplication while retaining the same conflict rule.
+- Add rescheduling - Feature, because it introduces new functionality not required by the current specification.
+- Restore retained cancellation lookup - Repair, because it fixes behaviour that violates FR-07.
+- Replace a magic status string with the existing enum - Refactoring, provided the observable behaviour remains unchanged.
+
+Behaviour to preserve: Valid bookings must still succeed, same-practitioner/exact-time SCHEDULED conflicts must still be rejected, different practitioners may book at the same time, and cancelled appointments must remain stored and retrievable.
+
 
 ### A.5 Traceback and hypothesis ranking
 Using one actual failure, identify its exception/assertion, expected and observed values, test line, application call path and supporting requirement. List three plausible causes and rank them by fit with the available evidence. For each cause, name a check that could distinguish it from the others. Explain why a traceback alone does not establish the cause.
 
-Response and reason: [complete]
+Response and reason:
+
+Pending the controlled Stage 8 fault preparation and first failing test.
+
+The current SmartCare baseline passed all 50 tests, so no actual failure has been observed yet.
+
+After reproducing a fault, I will record the failing assertion or exception, expected and observed values, exact test line, application call path, and supporting requirement.
+
+I will then rank three possible causes and identify a check for each one.
+
+A traceback alone does not establish the root cause because it shows where a failure was detected, which may differ from where the underlying defect originated.
 
 ### A.6 Exit question
 Why is changing code immediately after seeing a failure often a poor debugging strategy?
 
-Response and reason: [complete]
+Response and reason: Changing code immediately after seeing a failure is risky because the problem might be caused by an incorrect test, a misunderstanding of the requirements or an unexpected interaction elsewhere in the program.
+
+A better approach is to reproduce the failure, examine the evidence, form hypotheses and identify the root cause before making a small, justified change. This reduces the risk of introducing additional defects.
 
 
-Classification responses (1–5, each with reason): [complete]
-Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect: [complete]
-Traceback — exception/assertion; expected/observed values; test line; call path; requirement; ranked causes and discriminating checks: [complete]
+Classification responses (1–5, each with reason): See A.1. The five statements were classified as symptom, hypothesis, evidence, opinion and evidence, with explanations.
+Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect: See A.2. The cancelled-history scenario was documented against FR-07 / AC-05.2, including expected behaviour, the passing baseline observation, reproduction steps, an initial hypothesis and planned evidence checks.
+Traceback — exception/assertion; expected/observed values; test line; call path; requirement; ranked causes and discriminating checks: Pending actual Stage 8 failure. See A.5. No failure or traceback was observed in the passing 50-test baseline. Complete this field after reproducing a fault.
 
 ## B. Stage 7 baseline and safe preparation
 
-- Stage 7 code SHA and requirement baseline: [complete]
-- Baseline test command / working directory / observed result / evidence: [complete]
-- Clean preparation SHA if a record-only commit followed Stage 7: [complete]
+- Stage 7 code SHA and requirement baseline:  1c2317ab43822a2a1b4a630179ca3477b1009605. SmartCare requirements FR-01–FR-08 and their acceptance criteria remain the testing baseline.
+- Baseline test command / working directory / observed result / evidence: python -m pytest -q from project/; 50 passed, 0 failed in 0.08s. No failures observed before Stage 8 fault preparation.
+- Clean preparation SHA if a record-only commit followed Stage 7: 3367c7e43a7db8e84cfa4b805d69f4c45297ab7a. This was the current HEAD when the passing baseline was checked. The Stage 8 document had uncommitted changes; unrelated desktop.ini was untracked.
 - Branch and preparer / how teammates obtained this branch: [complete]
 - Downloaded tool version, source SHA256 and --check outcome: [complete]
 - --apply and --verify output summaries / artefact references: [complete]
