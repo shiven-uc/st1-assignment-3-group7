@@ -113,9 +113,9 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 
 - Stage 7 code SHA and requirement baseline:  1c2317ab43822a2a1b4a630179ca3477b1009605. SmartCare requirements FR-01–FR-08 and their acceptance criteria remain the testing baseline.
 - Baseline test command / working directory / observed result / evidence: python -m pytest -q from project/; 50 passed, 0 failed in 0.08s. No failures observed before Stage 8 fault preparation.
-- Clean preparation SHA if a record-only commit followed Stage 7: 3367c7e43a7db8e84cfa4b805d69f4c45297ab7a. This was the current HEAD when the passing baseline was checked. The Stage 8 document had uncommitted changes; unrelated desktop.ini was untracked.
-- Branch and preparer / how teammates obtained this branch: [complete]
-- Downloaded tool version, source SHA256 and --check outcome: [complete]
+- Clean preparation SHA if a record-only commit followed Stage 7: d04140802ab76657208ca54169c053a0036008e7. This commit records the Stage 8 tutorial and baseline before fault preparation. The --check preflight passed at this SHA.
+- Branch and preparer / how teammates obtained this branch: stage08-debugging, prepared locally by Shiven. Teammate branch access or transfer pending.
+- Downloaded tool version, source SHA256 and --check outcome: Stage 8 preparation tool v1.1. Baseline source SHA256: b4a1993e878c59a9df5e9055320702b2d318c5b6055bb1693a3afc25cd8fd375. --check passed; the project remained unchanged, and both proposed fault signatures were verified in a temporary copy.
 - --apply and --verify output summaries / artefact references: [complete]
 - Bounded diff inspected and recovery location (not committed): [complete]
 - Prepared faulty-state commit SHA: [complete]
