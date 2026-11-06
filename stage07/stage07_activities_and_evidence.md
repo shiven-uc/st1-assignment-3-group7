@@ -234,7 +234,7 @@ Use links rather than copying GitHub history. Continue the Stage 6 workflow; no 
 
 | Issue/task | Branch | PR | Reviewer | Key feedback | Outcome |
 |---|---|---|---|---|---|
-| Stage 7 testing and verification | `stage07-testing` | Pending PR | Pending review | Pending feedback | 50 tests passed locally; Git review pending |
+| Stage 7 testing and verification | `stage07-testing` | [PR #6](https://github.com/shiven-uc/st1-assignment-3-group7/pull/6) | Anish (feedback relayed by Shiven) | Tests cover key requirements; suggested additional date/time and participant validation tests | Review feedback recorded; merge pending |
 
 ## M Contribution Evidence
 
