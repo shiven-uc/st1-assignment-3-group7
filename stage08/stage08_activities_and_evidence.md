@@ -129,9 +129,9 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 - Minimal synthetic reproduction steps: Register two patients and practitioners D1 and D2. Book A1 with D1 at 9:00 AM. Attempt A2 with D1 at 9:00 AM, then separately test booking A2 with D2 at 9:00 AM using fresh store state.
 - Meaningful failing test path/name and exact relevant failure: tests/test_stage07.py::test_same_practitioner_time_conflict — Failed: DID NOT RAISE ValueError at line 83. Also, tests/test_stage07.py::test_different_practitioners_same_time — unexpected ValueError: Practitioner already has a SCHEDULED appointment at this time.
 - Human hypothesis and intended checks: see E, F8-01.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- Supported root cause and inspected code/runtime evidence: SmartCareDataStore.has_practitioner_conflict() incorrectly used != when comparing practitioner IDs. This inverted the conflict rule, allowing same-practitioner conflicts while rejecting different practitioners. The Git diff, failing tests and code inspection confirmed the cause.
+- Smallest justified fix / diff / why other behaviour is preserved: Changed the practitioner-ID comparison from != to ==. This restored the required same-practitioner conflict rule without altering the booking service, data-store interface or other scheduling requirements.
+- Repair SHA / focused verification result: 9e8b98e1db57a062b75afa91cfb64ad6b79f4cdf. Focused tests: 2 passed. Full suite after F8-01 repair: 46 passed, 4 failed, with the remaining failures associated with F8-02.
 
 ## D. F8-02 diagnosis and repair
 
@@ -140,9 +140,9 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 - Minimal synthetic reproduction steps: Register a patient and practitioner, book appointment A1, cancel A1, then attempt to retrieve A1. Attempt to cancel A1 again and check the exception.
 - Meaningful failing test path/name and exact relevant failure: tests/test_stage07.py::test_cancelled_appointment_retained — LookupError: Appointment not found at smartcare/services.py:136. Also, tests/test_stage07.py::test_repeated_cancellation_rejected — expected ValueError but received LookupError.
 - Human hypothesis and intended checks: see E, F8-02.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- Supported root cause and inspected code/runtime evidence: SmartCareDataStore.find_appointment() incorrectly excluded appointments with CANCELLED status. This caused the store to return None, which led AppointmentService.find_appointment() to raise LookupError. The failing tests and inspected code supported this diagnosis.
+- Smallest justified fix / diff / why other behaviour is preserved: Removed the cancelled-status exclusion and restored lookup through the appointment dictionary using validated appointment IDs. Cancelled appointments remain retrievable, while unknown IDs still return None at the store level. No additional business rules were introduced.
+- Repair SHA / focused verification result: b9ee2de3d5d95c6b29e8ec2ab325c81515159337. Focused tests: 2 passed. Full regression suite after both repairs: 50 passed, 0 failed.
 
 ## E. Human-first hypotheses
 
@@ -180,24 +180,24 @@ Final human conclusion and comparison with initial hypothesis: Copilot's highest
 
 | Checkpoint | Code SHA or precise diff | Command and working directory | Actual result and artefact reference |
 |---|---|---|---|
-| F8-01 before repair | [complete] | [complete] | [complete] |
-| F8-01 after repair | [complete] | [complete] | [complete] |
-| F8-02 before repair | [complete] | [complete] | [complete] |
-| F8-02 after repair | [complete] | [complete] | [complete] |
-| Full suite after both repairs, before refactor | [complete] | [complete] | [complete] |
+| F8-01 before repair | F8-01 before repair | 2592cce (prepared faulty state) | python -m pytest -q from project/ |
+| F8-01 after repair | F8-01 after repair | 9e8b98e | python -m pytest tests/test_stage07.py::test_same_practitioner_time_conflict tests/test_stage07.py::test_different_practitioners_same_time -q from project/ |
+| F8-02 before repair | F8-02 before repair | 9e8b98e (F8-01 repaired, F8-02 still faulty) | python -m pytest -q from project/ |
+| F8-02 after repair | F8-02 after repair | b9ee2de3d5d95c6b29e8ec2ab325c81515159337 | python -m pytest tests/test_stage07.py::test_cancelled_appointment_retained tests/test_stage07.py::test_repeated_cancellation_rejected -q from project/ |
+| Full suite after both repairs, before refactor | Full suite after both repairs, before refactor | b9ee2de3d5d95c6b29e8ec2ab325c81515159337 | python -m pytest -q from project/ |
 
-Explain how the assertions detect each relevant incorrect result and protect previous behaviour: [complete]
-Unrelated failures investigated / resolution: [complete or not applicable with reason]
+Explain how the assertions detect each relevant incorrect result and protect previous behaviour: F8-01 tests verify that same-practitioner/exact-time conflicts raise ValueError, while different-practitioner bookings succeed. F8-02 tests verify that cancelled appointments remain retrievable and that repeated cancellation raises ValueError. Retaining the existing tests helps detect regressions in patient registration, booking, cancellation and domain validation.
+Unrelated failures investigated / resolution: During the F8-02 repair, an indentation mistake temporarily prevented pytest from collecting tests. The indentation was corrected, and the subsequent focused and full regression runs passed. No unrelated product defects remained in the final run.
 
 ## H. Refactoring decision and before/after verification
 
-Smell and exact location: [complete]
-Small proposed structural change / why justified: [complete before editing]
-External behaviour to preserve / relevant tests: [complete]
+Smell and exact location: The has_practitioner_conflict() method in project/smartcare/data_store.py uses the hardcoded string "scheduled" when checking appointment status. This is a magic-string code smell because it depends on a literal value rather than the existing AppointmentStatus enum.
+Small proposed structural change / why justified: Replace the comparison appointment.status.value == "scheduled" with appointment.status is AppointmentStatus.SCHEDULED. This improves readability and consistency with the domain model without changing the business rules.
+External behaviour to preserve / relevant tests: Same-practitioner appointments at the exact same time must still conflict when SCHEDULED (AC-04.1). Different practitioners at the same time must still be allowed (AC-04.2). Cancelled appointments must remain retrievable (AC-05.2). Relevant tests include test_same_practitioner_time_conflict, test_different_practitioners_same_time, and the existing full regression suite.
 Before result: see G, full passing suite.
-Actual change / diff / separate refactor SHA: [complete]
-Focused and full after-refactor commands / working directory / results / evidence: [complete]
-Result — accepted, revised or rejected / reason / behaviour-preservation conclusion: [complete]
+Actual change / diff / separate refactor SHA: Replaced appointment.status.value == "scheduled" with appointment.status is AppointmentStatus.SCHEDULED in SmartCareDataStore.has_practitioner_conflict(). This removes a magic string and uses the existing domain enum. Separate refactoring commit: 63feabb4a27620344a6dd1ea82d3f23a13c1f7ec.
+Focused and full after-refactor commands / working directory / results / evidence: Ran python -m pytest tests/test_stage07.py::test_same_practitioner_time_conflict tests/test_stage07.py::test_different_practitioners_same_time -q from project/: 2 passed, 0 failed. Ran python -m pytest -q from project/: 50 passed, 0 failed.
+Result — accepted, revised or rejected / reason / behaviour-preservation conclusion: Accepted. Replacing the hardcoded status string with the existing AppointmentStatus.SCHEDULED enum improved readability without changing observable behaviour. Focused conflict tests and the full regression suite passed before and after the refactor.
 
 ## I. Git, human review and integration
 
