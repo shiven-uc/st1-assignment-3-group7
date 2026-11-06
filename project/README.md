@@ -1,20 +1,93 @@
-# SmartCare Stage 6 starter
+# SmartCare — Stage 9 Integrated Application
 
-Requirements baseline: SmartCare A3 2026 revision 2. Python 3.13 and pytest 8.3.5 verified. Runtime uses only the standard library.
+Software Technology 1, Assignment 3 — 2026 revision 2.
 
-From this directory, using a Python environment with the development dependency installed:
+SmartCare is a Python application for registering patients and practitioners, booking and cancelling appointments, retrieving appointment history, and listing a practitioner's appointments.
 
-```sh
+The application uses the Python standard library at runtime. Development tests use pytest.
+
+## Running SmartCare
+
+Open a terminal in the `project/` directory.
+
+Run the supplied demonstration:
+
+```powershell
 python main.py
-python -m pytest
 ```
 
-If needed in your approved environment: `python -m pip install -r requirements-dev.txt`.
+Run the interactive menu:
 
-The demo registers synthetic records and books/finds an appointment. All supplied tests pass. Data exists only in this session and is lost on exit; FR-10 restart persistence is retired. Use synthetic information only.
+```powershell
+python main.py --interactive
+```
 
-`domain.py` contains the entities, status and guarded cancellation. `data_store.py` holds three dictionaries through add/find/list methods. The three services share that object. Supplied registration, booking, appointment lookup and conflict checking work. IDs are trimmed, non-blank and case-sensitive. Properties provide read-only identity/appointment state; changes go through domain methods. No special architecture terminology is required.
+The interactive menu supports:
 
-Stage 6 TODOs: service patient/practitioner lookup and cancellation. Stage 9 TODOs: pure query, named sort key, service listing and interactive menu. The starter TODO contracts are in docstrings. All three Stage 6 TODO calls deliberately raise NotImplementedError; future TODOs remain stubs. No PG rescheduling or assurance solution is supplied.
+| Choice | Operation |
+|---|---|
+| 1 | Register patient |
+| 2 | Find patient |
+| 3 | Register practitioner |
+| 4 | Find practitioner |
+| 5 | Book appointment |
+| 6 | Cancel appointment |
+| 7 | Find appointment |
+| 8 | List practitioner appointments |
+| 0 | Exit |
 
-Service booking accepts IDs and a `datetime` (local, minute precision). Console parser accepts exactly `YYYY-MM-DD HH:MM`. Store lookups return None when absent; service lookups raise LookupError. Invalid values, duplicates, conflicts and illegal transitions raise ValueError. Lists are new containers holding the stored objects. No age, duration, patient-conflict or past-date rules apply.
+Date/time input must use `YYYY-MM-DD HH:MM`, for example `2026-12-01 09:00`.
+
+When listing appointments, leave the status blank to include all appointments, or enter `scheduled`, `cancelled` or `completed`.
+
+## Running Tests
+
+From `project/`:
+
+```powershell
+python -m pytest -q
+```
+
+Stage 9 verification: **76 passed, 0 failed**, in 0.10 seconds.
+
+The test suite includes previous-stage regression tests and Stage 9 query, service, workflow and console tests.
+
+If pytest is not installed in your approved environment:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
+
+## Application Responsibilities
+
+- `domain.py` — Patient, Practitioner and Appointment objects, validation and guarded cancellation.
+- `data_store.py` — Shared in-memory patient, practitioner and appointment collections, lookup and storage.
+- `services.py` — Registration, lookup, booking, cancellation and validated practitioner appointment listing.
+- `queries.py` — Pure appointment filtering and sorting using explicit inputs and a named sorting key.
+- `console.py` — Date/time parsing, appointment formatting, demonstration and interactive menu.
+- `main.py` — Selects the demonstration or interactive menu.
+
+The services share one `SmartCareDataStore` for each interactive session.
+
+## Rules and Behaviour
+
+- IDs are trimmed, non-blank and case-sensitive.
+- Appointments reference the actual registered Patient and Practitioner objects.
+- Duplicate IDs and invalid values are rejected.
+- A practitioner cannot have two SCHEDULED appointments at the same date/time.
+- Different practitioners can have appointments at the same time, including for the same patient.
+- Cancellation changes an existing appointment's status to CANCELLED without deleting its history.
+- Cancelling an appointment frees the practitioner's time slot for another appointment.
+- Practitioner listing returns a new list sorted by date/time and then appointment ID.
+- Listing without a status filter includes SCHEDULED, CANCELLED and COMPLETED appointments.
+- Recoverable input errors display messages and return to the menu.
+
+## Scope and Limitations
+
+SmartCare uses **session-only in-memory storage**. All registered records and appointments are lost when the application exits. Restart persistence (FR-10) is retired and is not required.
+
+There is no database, file-based persistence, rescheduling or PG assurance extension in this Stage 9 implementation.
+
+Booking uses local minute-precision date/time values. No age, appointment-duration, patient-conflict or past-date restriction is imposed by the supplied requirements.
+
+The application uses synthetic teaching data only. Do not enter real patient information.

@@ -182,41 +182,59 @@ Responsibility check: explain how domain invariants, shared-store collections, s
 
 ## F. Required reflections
 
-1. Which integration concern was architectural rather than a filtering/sorting detail? <!-- response -->
-2. Which Copilot suggestion did you reject as over-engineering, and why? <!-- response -->
-3. How did you prove cancelled appointments remain retrievable and listable in the same session? <!-- response -->
+1. Which integration concern was architectural rather than a filtering/sorting detail? The main architectural concern was ensuring every menu operation used the same SmartCareDataStore throughout the session. If the console created a new store for each operation, registered participants and appointments would not remain available for later lookup, cancellation or listing. The console must coordinate interaction through services while the store preserves shared session state. This is an architectural concern rather than a sorting detail.
+2. Which Copilot suggestion did you reject as over-engineering, and why? I rejected Copilot's optional suggestion to add scheduling conflict enforcement directly to data-store writes. The existing AppointmentService already checks practitioner conflicts before booking, and the workflow tests verify that conflicting appointments are rejected without partial insertion. Changing the store would expand the implementation beyond the required Stage 9 service workflow. The suggestion may be useful for future hardening, but it was unnecessary for this stage.
+3. How did you prove cancelled appointments remain retrievable and listable in the same session? I booked appointment A1 for practitioner D1, cancelled it, and then retrieved it again using its appointment ID. The console displayed A1 with CANCELLED status. An all-status practitioner listing included A1, while a SCHEDULED-only listing excluded it. I then successfully booked A3 into the freed time slot. Automated service, workflow and console tests also verified cancelled history, filtering and retained appointment identity. The full regression suite passed 76 tests.
 
 ## G. Ten formative answers
 
-1. What makes select_appointments pure, and what side effect breaks purity? <!-- response -->
-2. Which explicit inputs are needed, and why avoid a global store? <!-- response -->
-3. How can a new list reuse Appointment objects safely? <!-- response -->
-4. Why use a named key, and what breaks equal-time ties? <!-- response -->
-5. How do default and explicit status filters differ? <!-- response -->
-6. How do empty, unknown practitioner and invalid filter cases differ? <!-- response -->
-7. Which console errors recover, and how is unchanged state checked? <!-- response -->
-8. What is data integrity for registered participants, conflicts and history? <!-- response -->
-9. What is Copilot's review role, and who verifies findings? <!-- response -->
-10. How do pure functions and OOP responsibilities work together? <!-- response -->
+1. What makes select_appointments pure, and what side effect breaks purity?
+select_appointments is pure because it uses only its supplied inputs, returns a new filtered and sorted list, and does not modify the original appointments. Changing the source list, modifying appointment objects, printing output or accessing a global store would break purity.
+2. Which explicit inputs are needed, and why avoid a global store?
+
+The function receives a list of Appointment objects, a practitioner ID and an optional AppointmentStatus. Avoiding a global store makes its behaviour predictable, reusable and easier to test independently.
+
+3. How can a new list reuse Appointment objects safely?
+A new list can contain references to the original Appointment objects without copying them. This is safe for the query because it only reads their fields and never modifies them. The query therefore preserves the original objects and their identities.
+
+4. Why use a named key, and what breaks equal-time ties?
+appointment_sort_key provides reusable sorting logic. It returns (date_time, appointment_id), so appointments are sorted chronologically, with appointment ID breaking ties when two appointments have the same date and time.
+
+5. How do default and explicit status filters differ?
+When status=None, the query includes all appointment statuses, including SCHEDULED, CANCELLED and COMPLETED. When an explicit AppointmentStatus is supplied, only appointments with that status are returned.
+
+6. How do empty, unknown practitioner and invalid filter cases differ?
+A registered practitioner with no matching appointments receives an empty list. An unknown practitioner ID raises LookupError. A blank or invalid practitioner ID, or a status that is not an AppointmentStatus enum value, raises ValueError. The service handles these distinctions rather than the pure query.
+
+7. Which console errors recover, and how is unchanged state checked?
+The console recovers from invalid menu choices, blank or duplicate IDs, unknown records, malformed or impossible dates, invalid statuses, booking conflicts and repeated cancellation. It displays an error and returns to the menu. State preservation is checked by retrieving existing records, confirming their identity and status, and successfully reusing an appointment ID after a rejected booking.
+
+8. What is data integrity for registered participants, conflicts and history?
+Data integrity means appointments reference the actual registered Patient and Practitioner objects, duplicate appointment IDs are rejected, and a practitioner cannot have two SCHEDULED appointments at the same time. Cancellation updates the existing appointment's status without deleting its history, allowing later retrieval and listing.
+9. What is Copilot's review role, and who verifies findings?
+GitHub Copilot acts as a reviewer that identifies possible defects, missing tests and optional improvements. Human group members assess its suggestions against the requirements and actual code. In Stage 9, we accepted its automated console-testing recommendation and added five passing test cases, while rejecting an optional data-store hardening suggestion as unnecessary for the required workflow. Copilot's claims are not treated as proof without human verification.
+
+10. How do pure functions and OOP responsibilities work together?
+OOP components manage responsibilities such as domain validation, stored records and service coordination. Pure functions handle appointment filtering and sorting using explicit inputs without changing state. The console manages user interaction and delegates operations to services rather than implementing domain rules itself. This separation keeps the application understandable and testable.
 
 ## H. Review, completion and common handover
 
-Issues and bounded branches: <!-- links -->
-PR/diff and another-member human reviewer: <!-- actual links/name -->
-Review responses and Copilot comparison: <!-- links -->
-Integrated common Stage 9 SHA: <!-- complete -->
-Full regression command, working directory, actual count/result and evidence: <!-- complete -->
-README run instructions and scope/limitations: <!-- link -->
-Unresolved issues and support/action: <!-- complete -->
-UG common candidate / PG future branch plan: <!-- complete -->
+Issues and bounded branches: Stage 9 implementation branch `stage09-integration`. Query implementation, service listing, console integration and testing were completed in bounded commits. GitHub issue links pending.
+PR/diff and another-member human reviewer: PR pending. Anish Atamkur is the designated peer reviewer; actual review feedback will be recorded after review.
+Review responses and Copilot comparison: GitHub Copilot reviewed the Stage 9 code and tests in the VS Code chat "SmartCare Stage 9 Review". Its Important finding about missing automated console tests was accepted and resolved in commit `55fb153`. Its Optional data-store hardening suggestion was rejected as unnecessary for the assessed service workflow. Human peer-review evidence pending.
+Integrated common Stage 9 SHA: Pending PR merge into main. Latest Stage 9 branch commit: `55fb153`.
+Full regression command, working directory, actual count/result and evidence: From `project/`, ran `python -m pytest -q`. Actual result: 76 passed, 0 failed, in 0.10s. Automated query, service, workflow and console tests passed.
+README run instructions and scope/limitations: Updated `project/README.md` with demo and interactive commands, menu options, test instructions, application responsibilities, session-only storage and Stage 9 limitations. GitHub link pending.
+Unresolved issues and support/action:  No failing automated tests reported. README documentation, GitHub PR, peer review and integration remain outstanding.
+UG common candidate / PG future branch plan: After Stage 9 is reviewed and merged, preserve the integrated common SHA. UG proceeds toward Stage 12. Any PG Stage 10/11 work must use a separate approved branch. No persistence, rescheduling or assurance extensions are included in Stage 9.
 
-- [ ] Query contracts, purity, new lists and named-key ordering verified.
-- [ ] Service empty/unknown/invalid cases and cancellation history verified.
-- [ ] Every console command and invalid-input recovery demonstrated.
+- [x] Query contracts, purity, new lists and named-key ordering verified.
+- [x] Service empty/unknown/invalid cases and cancellation history verified.
+- [x] Every console command and invalid-input recovery demonstrated.
 - [ ] Query and workflow tests plus all previous tests pass; actual evidence linked.
 - [ ] Human design, Copilot critique, review and integration recorded honestly.
-- [ ] Reflections and ten formative responses completed.
-- [ ] README updated; earlier code/tests/records preserved.
+- [x] Reflections and ten formative responses completed.
+- [x] README updated; earlier code/tests/records preserved.
 - [ ] Common SHA protected for UG Stage 12; PG Stage 10/11 work deferred until approved.
 
 No persistence, rescheduling or assurance implementation is part of Stage 9. UG: 6→7→8→9→12. PG: 6→7→8→9→10→11→12. Mixed groups keep one repository and protect the common candidate.
