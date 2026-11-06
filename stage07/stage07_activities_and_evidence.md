@@ -279,9 +279,14 @@ Tests must be based on real requirements, use meaningful assertions and provide 
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: Pending merge and final verification. The previously tested baseline SHA was 2d991d7f62069729a4fb2e85f4d3f6c624e2e735, with Stage 7 changes in the working tree.
-Full-suite result: 50 passed, 0 failed. Verified locally using python -m pytest -q from project/.
-Unresolved defects and effect on baseline: None identified by the executed tests. All 50 tests passed. Additional boundary coverage remains possible, as documented in Section K.
-Clean working tree and integration evidence: Stage 7 changes submitted through PR #6. Final merge, clean working-tree verification and integrated main regression run pending.
-Stage 8 handover status: Stage 7 tests and documentation prepared for integration. No Stage 8 work assigned.
-All tutorial/formative responses and traceability/Copilot decisions complete: Sections A–N completed, including requirement-to-test traceability, human-first test design, actual Copilot suggestions and critical evaluation.
+Tested Stage 7 main SHA: 1c2317ab43822a2a1b4a630179ca3477b1009605
+
+Full-suite result: 50 passed, 0 failed in 0.16s. Verified using python -m pytest -q from project/ after merging Stage 7 into main.
+
+Unresolved defects and effect on baseline: None identified by the executed tests. All 50 tests passed on the integrated main branch. Additional testing opportunities are documented in Section K.
+
+Clean working tree and integration evidence: PR #6 merged into main. All tracked files are clean. The unrelated desktop.ini remains untracked and is excluded from the project commits.
+
+Stage 8 handover status: Stage 7 testing and documentation integrated into main. The baseline is verified with 50 passing tests. No Stage 8 work assigned.
+
+All tutorial/formative responses and traceability/Copilot decisions complete: Sections A–N completed, including requirement-to-test traceability, actual Copilot suggestions, critical evaluation, review evidence and regression results.
