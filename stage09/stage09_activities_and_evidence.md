@@ -83,13 +83,13 @@ These decisions preserve registered participant identities, appointment history,
 
 | Requirement | Input / session data | Operation and responsible component | Expected result or error | Test / evidence |
 |---|---|---|---|---|
-| QRY-01 | Collection of Appointment objects | appointment_sort_key generates a sorting key | Appointments ordered by date/time, then appointment ID | Planned: test appointment sorting |
-| QRY-02 | Appointment collection and optional practitioner ID | select_appointments filters by practitioner | Only matching practitioner's appointments returned | Planned: test practitioner filtering |
-| QRY-03 | Appointment collection and optional status | select_appointments filters by AppointmentStatus | Matching status returned; no filter includes all statuses | Planned: test status filtering |
-| QRY-04 | Appointment collection and filter values | Pure query returns a new sorted list | Original list, appointment fields and object identities unchanged | Planned: test query purity |
-| FP-01 | Known practitioner ID | Service retrieves appointments through the query function | Sorted appointment list, including an empty list when appropriate | Planned: test service listing |
-| FP-02 | Unknown or invalid practitioner ID | Service validates and checks the practitioner | Appropriate error; existing records unchanged | Planned: test invalid practitioner lookup |
-| FP-03 | Optional status filter | Service validates status and delegates filtering | Correct filtered results or validation error | Planned: test service status filtering |
+| QRY-01 | Appointment collection and practitioner ID | Pure query selects appointments for the requested practitioner | Only matching practitioner's appointments returned | `test_practitioner_isolation` |
+| QRY-02 | Appointment collection and optional AppointmentStatus | Pure query applies optional status filtering | Default includes every status; explicit filters select matching status; no matches returns empty list | `test_default_includes_every_status`, `test_explicit_status_filter` |
+| QRY-03 | Appointment collection | Named key sorts by date/time and appointment ID | Correct ascending order without changing source order or fields | `test_named_sort_key`, `test_source_and_objects_unchanged` |
+| QRY-04 | Practitioner ID and optional status | AppointmentService validates practitioner and status, then delegates to query | Known-empty returns []; unknown ID raises LookupError; invalid ID or non-enum status raises ValueError | `tests/test_stage09_service.py` |
+| FP-01 | Explicit appointment collection and filters | Pure query processes inputs without hidden state or I/O | Repeated inputs produce equivalent results without side effects | `test_repeated_calls_are_consistent`; code inspection |
+| FP-02 | Empty, sorted and unsorted appointment lists | Pure query returns a new list containing existing Appointment objects | Different list identity; original objects and source unchanged | `test_empty_and_already_sorted_inputs`, `test_source_and_objects_unchanged` |
+| FP-03 | Appointment objects | `appointment_sort_key` provides the reusable sorting key | Named key is tested directly and used by sorting | `test_named_sort_key`, `test_select_appointments_uses_named_sort_key` |
 | UI-01 | Valid menu choices and user inputs | Console calls existing SmartCare services | Registration, lookup, booking, cancellation and listing work in one session | Planned: console workflow test |
 | UI-02 | Invalid menu choices and inputs | Console catches expected errors and allows retry | Clear error message; program continues without corrupting state | Planned: console recovery test |
 | FR-01–FR-08 | Existing registered records and appointment operations | Existing domain, store and service methods | Existing requirements remain satisfied | Existing regression suite: 50 passed before Stage 9 |
@@ -107,12 +107,31 @@ Errors must be handled at the correct layer. Domain objects enforce invariants, 
 
 | Requirement / test ID | Code location | Case and meaningful assertion | Actual result | Evidence link |
 |---|---|---|---|---|
-| | | | | |
+| QRY-01 / test_practitioner_isolation | `smartcare/queries.py`; `tests/test_queries.py` | D2 listing contains only A4, excluding D1 appointments | PASS — query tests passed | `project/tests/test_queries.py` |
+| QRY-02 / test_default_includes_every_status | `smartcare/queries.py`; `tests/test_queries.py` | Default filter includes SCHEDULED, CANCELLED and COMPLETED | PASS | `project/tests/test_queries.py` |
+| QRY-02 / test_explicit_status_filter | `smartcare/queries.py`; `tests/test_queries.py` | Each enum status returns matching appointments only | PASS — 3 parameterised cases | `project/tests/test_queries.py` |
+| QRY-03 / test_source_and_objects_unchanged | `smartcare/queries.py`; `tests/test_queries.py` | Checks sorted ID order, unchanged source and fields, and original object identity | PASS | `project/tests/test_queries.py` |
+| FP-01 / test_repeated_calls_are_consistent | `smartcare/queries.py`; `tests/test_queries.py` | Repeated calls produce equivalent results in distinct lists | PASS | `project/tests/test_queries.py` |
+| FP-02 / test_empty_and_already_sorted_inputs | `smartcare/queries.py`; `tests/test_queries.py` | Empty and already-sorted inputs produce fresh lists containing unchanged objects | PASS | `project/tests/test_queries.py` |
+| FP-03 / test_named_sort_key | `smartcare/queries.py`; `tests/test_queries.py` | Directly checks the date/time and appointment-ID sorting key | PASS | `project/tests/test_queries.py` |
+| FP-03 / test_select_appointments_uses_named_sort_key | `smartcare/queries.py`; `tests/test_queries.py` | Monkeypatch verifies the query invokes the named sorting key | PASS | `project/tests/test_queries.py` |
+| QRY-04 / Stage 9 service tests | `smartcare/services.py`; `tests/test_stage09_service.py` | Checks known-empty, unknown/blank practitioner, invalid status, whitespace, cancelled history and unchanged state | PASS — 7 tests | `project/tests/test_stage09_service.py` |
+| Integrated workflow tests | `tests/test_workflows.py` | Checks conflicts, registered-object identity, different-practitioner booking, cancellation, filtering and freed-slot reuse | PASS — 3 tests | `project/tests/test_workflows.py` |
 
 Include practitioner isolation, every enum status/default all, equal-time ID tie-break, named-key reuse, repeated calls, empty/already-sorted fresh lists, unchanged source order/fields, known-empty/unknown/invalid service cases and retained history.
 
-Purity explanation from code inspection, including absence of hidden state and I/O: <!-- response -->
-What the tests do and do not establish: <!-- response -->
+Purity explanation from code inspection, including absence of hidden state and I/O: The appointment_sort_key function only reads the appointment's date/time and ID and returns a tuple.
+
+The select_appointments function receives all required data through its parameters. It filters appointments into a new list and uses sorted() with the named appointment_sort_key function.
+
+Neither function accesses a global data store, reads input, prints output, or changes the original collection or appointment objects. Repeated calls with unchanged inputs produce equivalent results. The returned list is new, but it contains references to the original Appointment objects.
+What the tests do and do not establish: The tests verify practitioner isolation, default and explicit status filtering, date/time sorting with appointment-ID tie-breaking, repeated calls, fresh result lists and unchanged source objects.
+
+The service tests verify known-empty results, invalid and unknown practitioner IDs, invalid status values and retained cancelled history.
+
+The workflow tests verify booking conflicts, registered-object identity, cancellation, filtering, freed-slot rebooking and unchanged state after rejected bookings.
+
+The full regression suite passed all 71 tests. However, passing tests cannot prove the absence of every possible defect or side effect. Code inspection is also necessary to check that the query functions contain no hidden state, input/output or mutation.
 
 ## D. Integrated console and workflow evidence
 
@@ -126,15 +145,40 @@ Include registration/find, booking, conflict rejection, different-practitioner b
 
 ## E. GitHub Copilot review and human decisions
 
-Human design completed before AI: <!-- reference -->
-Actual prompt/context supplied: <!-- paste or accessible reference -->
-Actual response: <!-- accessible reference -->
+Human design completed before AI: Commit `051b16d9d76013169e34f4874019def8dba3b257` — Stage 9 human-first design and contracts.
+Actual prompt/context supplied: Act as a query and console integration reviewer for my SmartCare Stage 9 university project.
+
+Review these files:
+
+- `smartcare/queries.py`
+- `smartcare/services.py`
+- `smartcare/console.py`
+- `tests/test_queries.py`
+- `tests/test_stage09_service.py`
+- `tests/test_workflows.py`
+The current regression suite has 71 passing tests.
+
+Check:
+
+1. Explicit inputs, purity and source non-mutation.
+2. Domain, service, data-store and console responsibilities.
+3. Validation and recovery without partial state changes.
+4. Correct object identity, enum filtering and ordering.
+5. Retained cancellation history and integrity risks.
+6. Missing query, workflow or console tests.
+Do not redesign the domain or add databases, persistence or frameworks. Do not invent fields or delete cancelled appointment history.
+
+Separate confirmed issues from optional improvements. Rank findings as Critical, Important or Optional. For each finding, identify the relevant code and test evidence.
+
+Please review the actual files rather than assuming how they work.
+Actual response: GitHub Copilot reviewed queries.py, services.py, console.py, the Stage 9 tests, domain.py and data_store.py. It ran `python -m pytest -q` and reported 71 passing tests. It found no Critical runtime defect, identified missing automated console tests as an Important coverage gap, and raised direct data-store conflict enforcement as an Optional hardening suggestion. Full response retained in the VS Code Copilot chat titled "SmartCare Stage 9 Review".
 
 | AI finding | Code/test evidence | Severity | Accept/Modify/Reject and reason | Change or no change | Actual verification |
 |---|---|---|---|---|---|
-| | | | | | |
+|| Missing automated console tests | `console.py`; Copilot identified that no automated tests directly exercised `run_menu()` or date parsing | Important | Accept — automated console tests strengthen regression coverage alongside manual UI-01 and UI-02 verification | Added `tests/test_console.py` covering invalid dates, menu recovery and cancelled history | PASS — 5 console tests passed; full regression 76 passed, 0 failed |
+| Direct store writes bypass service conflict check | `services.py` checks conflicts before booking; `data_store.py` does not independently reject conflicting scheduled appointments | Optional | Reject for Stage 9 — normal booking uses the service; changing store responsibilities is unnecessary for the assessed workflow | No change | Existing service conflict test passed; 71-test regression passed |
 
-Responsibility check: explain how domain invariants, shared-store collections, service coordination, pure queries and console effects remain separate: <!-- response -->
+Responsibility check: explain how domain invariants, shared-store collections, service coordination, pure queries and console effects remain separate: SmartCare separates responsibilities between its components. Domain objects enforce valid values and appointment cancellation rules. SmartCareDataStore holds registered patients, practitioners and appointments in shared in-memory collections. Services coordinate registration, lookup, booking, cancellation and validated appointment listing. The query functions filter and sort explicitly supplied appointments without mutation or input/output. The console handles menu choices, input conversion, output messages and recoverable errors while delegating business operations to services. Copilot's review found no Critical runtime defects, but identified missing automated console coverage as an Important improvement.
 
 ## F. Required reflections
 
