@@ -201,77 +201,67 @@ Result — accepted, revised or rejected / reason / behaviour-preservation concl
 
 ## I. Git, human review and integration
 
-Issues for both defects / refactor scope and owners: F8-01 — repair incorrect practitioner conflict detection (Shiven). F8-02 — restore cancelled appointment lookup (Shiven). Refactoring — replace the hardcoded scheduled-status string with the existing enum (Shiven). GitHub issue links pending; do not claim separate issues were created.
-Branch / prepared, repair and refactor checkpoints: stage08-debugging. Prepared faulty state: 2592cce. Human-first hypotheses: d53e1b6. F8-01 repair: 9e8b98e. F8-02 repair: b9ee2de. Separate refactoring: 63feabb4a27620344a6dd1ea82d3f23a13c1f7ec. See Sections B, C, D and H.
-PR link and another member's reviewer identity: Stage 8 pull request (insert actual PR link). Anish Atamkur reviewed the changes; his confirmed feedback was relayed through Shiven's GitHub account because he did not have GitHub access.
+Issues for both defects / refactor scope and owners: F8-01 — repair incorrect practitioner conflict detection (Shiven). F8-02 — restore cancelled appointment lookup (Shiven). Refactoring — use the existing AppointmentStatus enum in the practitioner conflict check (Shiven). No separate GitHub issue links recorded.
+Branch / prepared, repair and refactor checkpoints: `stage08-debugging`. Prepared faulty state: `2592cce`; human-first hypotheses: `d53e1b6`; F8-01 repair: `9e8b98e`; F8-02 repair: `b9ee2de`; refactoring: `63feabb`. See Sections B, C, D and H.
+PR link and another member's reviewer identity[PR #8](https://github.com/shiven-uc/st1-assignment-3-group7/pull/8). Anish Atamkur reviewed the changes; his confirmed feedback was relayed through Shiven's GitHub.
 Key human feedback, difference from Copilot findings and response/outcome: Anish agreed that both repairs were consistent with the SmartCare requirements and that replacing the hardcoded status string with the enum improved readability. He suggested adding a dedicated test confirming that a cancelled appointment no longer blocks its original time slot. Unlike Copilot's diagnosis, which focused on identifying root causes, the human review also considered the adequacy of regression coverage. The suggestion has been recorded for consideration; no additional test has yet been implemented.
-Actual review approval / merge evidence: No Stage 8 review approval or merge recorded yet.
-Integrated code SHA and team pull/retest command / working directory / result: Pending merge into main. Current refactoring branch passed python -m pytest -q from project/ with 50 passed, 0 failed.
-Evidence-only later SHA / explanation if different: Not applicable yet. Update if a documentation-only commit follows the final integrated code SHA.
-Each member's substantive contribution and artefact: Shiven; inspected the actual faults, recorded human-first hypotheses, evaluated Copilot diagnoses, implemented both repairs, performed the refactoring, ran verification tests and maintained the Stage 8 evidence record. Evidence: commits d53e1b6, 9e8b98e, b9ee2de and 63feabb. Anish; human review pending; record his actual feedback and contribution once received.
+Actual review approval / merge evidence: PR #8 was merged into main. Anish's confirmed feedback was posted in the PR conversation by Shiven. This was a relayed peer review, not a formal GitHub approval.
+Integrated code SHA and team pull/retest command / working directory / result: dc5feee74d1ffd2d4bcc37c3ceb01f59db836686. Ran git pull origin main, followed by python -m pytest -q from project/: 50 passed, 0 failed in 0.08s. git status --short returned no changes.
+Evidence-only later SHA / explanation if different: No later evidence-only commit recorded yet. Any subsequent documentation update will be committed separately.
+Each member's substantive contribution and artefact: Shiven - inspected and diagnosed both faults, recorded human-first hypotheses, evaluated Copilot diagnoses, implemented both repairs, performed the refactoring, ran verification tests and maintained Stage 8 documentation. Evidence: commits d53e1b6, 9e8b98e, b9ee2de, 63feabb and PR #8. Anish Atamkur - reviewed the repairs, refactoring and test coverage, and suggested an additional cancelled-slot regression test. His confirmed feedback is recorded in PR #8.
 
 ## J. Required reflections
 
-1. Which Copilot diagnosis appeared convincing but lacked evidence? [complete; report honestly if none and discuss the least-supported real suggestion]
-2. What evidence changed your group's view? [complete]
-3. How did regression tests protect the refactoring? [complete]
+1. Which Copilot diagnosis appeared convincing but lacked evidence? Copilot suggested that AppointmentService.book_appointment() might be passing the wrong practitioner ID during conflict checking. This was a plausible explanation for F8-01, but inspecting the service showed that the correct practitioner ID was being passed. We rejected this diagnosis because the evidence instead supported an inverted comparison in has_practitioner_conflict().
+2. What evidence changed your group's view? The failing tests and Git diff helped us identify the actual causes. For F8-01, the comparison used != instead of ==, explaining why different practitioners were incorrectly treated as conflicting. For F8-02, find_appointment() excluded appointments with CANCELLED status, causing lookup failures. Inspecting these conditions and verifying the repairs confirmed which hypotheses were correct. Our initial human hypotheses were supported rather than overturned.
+3. How did regression tests protect the refactoring? Before refactoring, all 50 tests passed after repairing both faults. We then replaced the hardcoded "scheduled" string with AppointmentStatus.SCHEDULED to improve readability. After the change, the two focused conflict tests passed, and the full regression suite still passed all 50 tests. This provided evidence that the refactoring preserved the existing tested behaviour.
 
 ## K. Ten formative questions
 
 1. What should an engineer do before changing code in response to a failure?
-
-Response: [complete]
+Response: Reproduce the failure, compare expected and actual behaviour, inspect the traceback and relevant code, and form a testable hypothesis before making changes.
 
 2. Where should expected behaviour come from during debugging?
-
-Response: [complete]
+Response: Expected behaviour should come from the agreed requirements, acceptance criteria and documented software contracts, rather than assumptions or incorrect tests.
 
 3. What is a debugging hypothesis?
-
-Response: [complete]
+Response: A debugging hypothesis is a possible explanation for a failure that can be investigated using evidence. For F8-01, our initial hypothesis was that the practitioner-ID comparison was incorrect.
 
 4. What is a regression test and why is it retained?
-
-Response: [complete]
+Response: A regression test checks whether previously working functionality still behaves correctly after changes. It is retained to help detect defects introduced by future repairs or refactoring.
 
 5. What is meant by root cause?
-
-Response: [complete]
+Response: The root cause is the underlying defect responsible for the observed failure. For F8-01, the root cause was an inverted practitioner-ID comparison using != instead of ==.
 
 6. What is refactoring?
-
-Response: [complete]
+Response: Refactoring improves the internal structure, readability or maintainability of code without changing its external behaviour. In Stage 8, we replaced a hardcoded status string with AppointmentStatus.SCHEDULED.
 
 7. What is a swallowed exception?
-
-Response: [complete]
+Response: A swallowed exception occurs when an error is caught but ignored or hidden without appropriate handling. This can make failures difficult to diagnose and allow incorrect behaviour to continue unnoticed.
 
 8. What is a code smell?
-
-Response: [complete]
+Response: A code smell is a characteristic suggesting that code may be difficult to understand, maintain or extend. Examples include duplicated logic, long methods, deep nesting and magic strings.
 
 9. How should GitHub Copilot-generated debugging diagnoses be treated?
-
-Response: [complete]
+Response: Copilot diagnoses should be treated as suggestions rather than confirmed facts. Developers must compare them against requirements, inspect the relevant code, perform discriminating checks and accept or reject explanations based on evidence.
 
 10. What is the Stage 8 engineering rule?
-
-Response: [complete]
+Response: Reproduce and understand failures before modifying code, establish root causes using evidence, make the smallest justified repairs, and verify that existing behaviour is preserved through regression testing. Refactoring must be separate from repairs and verified before and after.
 
 ## L. Completion and handover
 
-- [ ] Existing project, earlier tests and stage records preserved.
-- [ ] Passing Stage 7 SHA and safe preparation details recorded.
-- [ ] Both defects reproduced with meaningful failing tests.
-- [ ] Both human hypotheses recorded before Copilot; actual suggestions evaluated with evidence.
-- [ ] Supported causes and minimal repairs explained; focused and full regression results recorded.
-- [ ] One genuine refactor verified under passing before/after tests.
-- [ ] Human PR review, feedback resolution and integrated retest recorded.
-- [ ] Tutorial, three reflections and ten formative responses complete.
-- [ ] Local recovery metadata excluded from submitted source.
-- [ ] Same project and full suite ready for Stage 9 after Stage 8 integration, verification and recording.
+- [x] Existing project, earlier tests and stage records preserved.
+- [x] Passing Stage 7 SHA and safe preparation details recorded.
+- [x] Both defects reproduced with meaningful failing tests.
+- [x] Both human hypotheses recorded before Copilot; actual suggestions evaluated with evidence.
+- [x] Supported causes and minimal repairs explained; focused and full regression results recorded.
+- [x] One genuine refactor verified under passing before/after tests.
+- [x] Human PR review, feedback resolution and integrated retest recorded.
+- [x] Tutorial, three reflections and ten formative responses complete.
+- [x] Local recovery metadata excluded from submitted source.
+- [x] Same project and full suite ready for Stage 9 after Stage 8 integration, verification and recording.
 
-Verified integrated code SHA / result: see I.
-Submitted SHA and evidence-only difference if any: [complete]
-Unresolved issues or incomplete checks / owner / next action: [complete]
-Handover note: [complete]
+Verified integrated code SHA / result: See Section I. Integrated main SHA: dc5feee74d1ffd2d4bcc37c3ceb01f59db836686. Full regression suite: 50 passed, 0 failed in 0.08s.
+Submitted SHA and evidence-only difference if any: Final submission SHA pending documentation-only commit and merge. The verified integrated code SHA is dc5feee74d1ffd2d4bcc37c3ceb01f59db836686. Any later SHA should be identified as an evidence-only update if application code remains unchanged.
+Unresolved issues or incomplete checks / owner / next action: No unresolved product defects identified by the 50 executed tests. The suggested additional cancelled-slot test was not implemented and remains an optional coverage improvement. Shiven will finalise and integrate the Stage 8 documentation.
+Handover note: Both supplied Stage 8 faults were reproduced, diagnosed and repaired. A separate refactoring was completed and verified. PR #8 was merged, and the integrated project passed all 50 tests. Existing functionality and earlier test records were preserved. The project is ready for Stage 9 work after the final evidence-only documentation update is integrated.
