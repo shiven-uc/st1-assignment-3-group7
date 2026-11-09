@@ -5,13 +5,13 @@ Baseline: Stage 6 foundation, 2026 revision 2. This starter deliberately leaves 
 
 ## Group index
 
-- Group and tutorial: [complete]
-- Member names, GitHub usernames and UG/PG cohorts: [complete]
-- Shared repository URL: [complete]
-- Latest completed stage: [complete]
-- Verified code SHA: [complete]
-- Test command, working directory and observed result: [complete]
-- Final submitted SHA, if different from tested code SHA: [complete; explain evidence-only changes]
+- Group and tutorial: Group 7, Wednesday 2:30-4:30
+- Member names, GitHub usernames and UG/PG cohorts: Shiven Mitra, UG, (shiven-uc), Anish Atmakur, UG, (anish32132)
+- Shared repository URL: (https://github.com/shiven-uc/st1-assignment-3-group7)
+- Latest completed stage: Stage 9. Stage 12 final release verification is in progress.
+- Verified code SHA: 6b6595180d82dfc6f9e67daf6b20931163df544c
+- Test command, working directory and observed result: From `project/`, ran `python -m pytest -q` — 76 passed in 0.13 seconds using Python 3.14.3 and pytest 8.3.5.
+- Final submitted SHA, if different from tested code SHA: Pending final Stage 12 integration. Any documentation-only changes will be recorded separately.
 
 Do not put student IDs, private peer ratings, credentials or personal contact details here.
 

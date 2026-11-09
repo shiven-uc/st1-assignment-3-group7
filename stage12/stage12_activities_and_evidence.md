@@ -46,7 +46,7 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 | Complete common | Python 3.14.3; pytest 8.3.5 | `project/`; `python -m pytest -q` | `6b6595180d82dfc6f9e67daf6b20931163df544c` | PASS — 76 passed in 0.10s | Local terminal output; GitHub evidence link pending |
 | Complete PG if applicable | Not applicable — UG-only group | Not applicable | Not applicable | Not applicable | No PG tests required |
 | Affected focused checks after correction | No Stage 12 code corrections made yet | Not applicable | Not applicable | Not applicable | Run focused checks if corrections are needed |
-| Full integrated recheck | Python 3.14.3; pytest 8.3.5 | `project/`; `python -m pytest -q` | `6b6595180d82dfc6f9e67daf6b20931163df544c` | PASS — 76 passed in 0.10s | Local terminal output; final release-candidate recheck pending |
+| Full integrated recheck | Python 3.14.3; pytest 8.3.5 | `project/`; `python -m pytest -q` | `6b6595180d82dfc6f9e67daf6b20931163df544c` | PASS — 76 passed in 0.13s; `python main.py` also ran successfully | Local terminal output; final merged-candidate verification pending |
 Prior assertions preserved / reviewed test diff: All 76 accumulated tests from the previous stages were retained and passed without failures. No Stage 12 application code changes have been made at this checkpoint. Final release diff review remains pending.
 Remaining failure / limitation: No automated test failures were observed. The application remains limited to synthetic, session-only in-memory data, with no restart persistence, rescheduling or production healthcare features. Final README reproducibility, release review and packaging checks remain pending.
 
@@ -71,8 +71,8 @@ Remaining failure / limitation: No automated test failures were observed. The ap
 | PG reschedule identity/participants/time and no-op | N/A | N/A | N/A | N/A |
 | PG conflict/invalid status/failure non-mutation | N/A | N/A | N/A | N/A |
 | PG old slot / current lookup/list ordering / assurance risks | N/A| N/A | N/A | N/A |
-Stable demo owner / fresh process / command: Shiven will demonstrate SmartCare using `python main.py --interactive` from the `project/` directory in a fresh Python process. The Stage 9 demonstration was completed successfully; final Stage 12 demonstration remains to be confirmed.
-PG demonstrations through service/tests or not applicable: Not applicable - both group members are undergraduate students.
+Stable demo owner / fresh process / command: Shiven completed the final Stage 12 interactive demonstration using python main.py --interactive from project/. Patient A1 and practitioner D1 were registered, appointment A1 was booked, and a conflicting appointment A2 was correctly rejected. Cancelling A1 preserved its history, the all status listing included the cancelled appointment, and scheduled-only filtering returned no matching appointments. All observed results matched expectations. Additional invalid input recovery was verified during Stage 9 and remains covered by automated tests.
+PG demonstrations through service/tests or not applicable: Not applicable
 
 
 ## E Final code quality and AI review
@@ -86,7 +86,7 @@ PG demonstrations through service/tests or not applicable: Not applicable - both
 | Focused methods / duplication / dead or commented code | `project/smartcare/` | Existing functions separate booking, lookup, cancellation and listing | Inspect for unnecessary duplication and dead code before release |
 | Globals / leakage / unnecessary inheritance or frameworks | `project/smartcare/queries.py`, `console.py` | Queries use explicit inputs; console creates one session store | Final inspection for hidden state pending |
 | No SQLite/persistence/repository ABCs/speculative features | `project/smartcare/`; `project/README.md` | No persistence or PG-only extensions included in Stage 9 implementation | No change required under UG requirements |
-| Synthetic data / secrets / dependencies / provenance | `project/README.md`, `requirements-dev.txt` | Synthetic teaching data used; standard library runtime and pytest development dependency documented | Final dependency and secret inspection pending |
+| Synthetic data / secrets / dependencies / provenance | `project/README.md`, `project/requirements-dev.txt`, tracked `project/` files | Synthetic teaching data documented; standard-library runtime and pytest 8.3.5 development dependency; secret keyword scan returned no matches | No change required; `git grep` found no keyword matches, and the repository contains no unexpected untracked files |
 | Significant common Copilot contributions and human verification | Stage 9 Section E; PR #10; `tests/test_console.py` | Copilot identified missing automated console coverage; five tests were added and passed | Accepted finding verified; 76-test regression passed |
 | PG plan/diff/test approvals and Stage 11 VERIFY/TRUST | N/A | N/A | N/A |
 
@@ -95,8 +95,7 @@ PG demonstrations through service/tests or not applicable: Not applicable - both
 | Missing automated console coverage | UI-01/UI-02; `project/smartcare/console.py` | Added `tests/test_console.py` and ran the full regression suite | Accept — relevant missing test coverage | Five console tests passed; full suite 76 passed |
 | Direct data-store writes bypass conflict checking | `project/smartcare/data_store.py`, `services.py` | Reviewed service booking and conflict tests | Reject — optional hardening beyond the required Stage 9 workflow | No code change; existing conflict tests passed |
 Access route or approved equivalent / limitations: GitHub Copilot was used through VS Code to review the Stage 9 code and tests. Its suggestions were evaluated by humans rather than accepted automatically.
-Available AI evidence and missing evidence honestly disclosed: Stage 9 Section E records the actual Copilot review, human decisions and verification results. PR #10 records Anish's feedback, relayed by Shiven. A separate final AI-use disclosure and Stage 12 release verification are still pending.
-
+Available AI evidence and missing evidence honestly disclosed: Stage 9 Section E records the actual GitHub Copilot review, human decisions and test results. The accepted console-test recommendation was verified by five tests and the complete 76-test regression. Optional data store hardening was rejected as outside the assessed workflow. The final Stage 12 source review found no additional release stopping defects. No new AI generated code was added during Stage 12.
 
 ## F README and reproducibility check
 
@@ -109,10 +108,10 @@ Available AI evidence and missing evidence honestly disclosed: Stage 9 Section E
 | Repository structure and architecture responsibilities | Root `README.md`; `project/README.md` | Shiven | Domain, data store, services, queries, console and main entry point documented |
 | Responsible AI summary / synthetic-data rule | Stage 9 Section E; `project/README.md` | Shiven | Copilot review documented; synthetic-data-only rule stated; final AI disclosure pending |
 | Release label/version and SHA links | Stage 12 Section A; `project/README.md` | Shiven | Stage 12 release label recorded in evidence; final release SHA and README links pending |
-Root README index and project/README verified: Both README files were reviewed for the existing project structure, stage links, run instructions and session-only limitations. Final independent verification remains pending.
-Fresh clone or extracted ZIP / candidate identity: Not yet performed. A fresh extraction of the final release ZIP will be checked against the submitted Git commit.
-Verifier and clean environment / actual version:  Shiven verified Python 3.14.3, pytest 8.3.5 and 76 passing tests. Anish Atamkur independently reported that SmartCare works. His exact environment, test commands and output have not been supplied.8.3.5. Independent verification by Anish and fresh-environment reproduction remain pending.
-Setup/run/test commands and observed results: From `project/`, `python -m pytest -q` returned 76 passed in 0.10s at SHA `6b6595180d82dfc6f9e67daf6b20931163df544c`. Demo and interactive commands were previously exercised during Stage 9; final fresh-environment checks remain pending.
+Root README index and project/README verified: Both README files were updated for the Stage 12 undergraduate release candidate. The root README identifies the group, repository, completed stages and verified baseline. The project README includes setup, demonstration and test commands, architecture, limitations and responsible AI information. Shiven verified the application from a separate repository copy. Independent README reproduction by Anish remains unconfirmed.
+Fresh clone or extracted ZIP / candidate identity: A separate repository copy was created at SmartCare_Stage12_Verify using git clone. The three modified documentation files were copied from the original working tree. The application demo ran successfully and all 76 tests passed in 0.25s. This verifies the current code in a separate directory, not the final submitted ZIP.
+Verifier and clean environment / actual version:  Shiven verified the application in a separate repository copy using Python 3.14.3 and pytest 8.3.5. Anish reported that SmartCare works, but independent setup commands and test output have not been supplied. Verification used the existing local Python installation, not a newly created environment.
+Setup/run/test commands and observed results: From SmartCare_Stage12_Verify/project, python main.py ran successfully and python -m pytest -q returned 76 passed in 0.25s. The test copy contained the latest README and Stage 12 documentation changes.
 Missing local file or setup gap / remedy and recheck: No missing local files have been reported. Final release packaging and independent setup checks are still pending; any issues found will be documented, corrected and retested.
 
 
@@ -145,13 +144,13 @@ PG assurance residual risks / owner / status or not applicable: Not applicable �
 | Common Stage 12 regression | `python -m pytest -q` from `project/` at SHA `6b6595180d82dfc6f9e67daf6b20931163df544c`; 76 passed | No failing tests observed | Shiven — continue release verification | No code correction required | Full regression: 76 passed in 0.10s | Automated tests do not establish complete release readiness |
 | Independent verification | Anish reported that SmartCare works; exact test output and environment not supplied | Evidence gap; not a confirmed application defect | Shiven and Anish — record reproducible verification details if available | No code change | Shiven's 76-test regression passed; Anish's detailed results pending | Independent setup reproducibility not fully evidenced |
 
-Justified no-change conclusion if no defect found: No new application defect was identified in the latest Stage 12 regression. All 76 tests passed, and previous Stage 9 manual demonstrations covered the main workflows and invalid-input recovery. Therefore, no corrective code change is currently justified. Remaining release activities concern verification evidence, documentation, packaging and final approval rather than an identified runtime failure.
+Justified no-change conclusion if no defect found: The Stage 12 source review and final local checks identified no release-blocking application defect. All 76 automated tests passed in the original repository and again in a separate copy. The final interactive demonstration confirmed booking, conflict rejection, cancellation, retained history and appointment filtering. No executable code changes were necessary. Documentation was updated to improve release reproducibility.
 Release blockers still open / status: Final release verification remains in progress. Outstanding activities include completing the final repository and dependency checks, confirming README reproducibility, recording the release review and decision, verifying the source ZIP, and confirming submission arrangements. No failing automated tests are currently known. The release is not yet approved for submission.
 
 
 ## I Git review and integration evidence
 
-Issue / PR / diff links and reviewed SHA: Stage 9 implementation PR: https://github.com/shiven-uc/st1-assignment-3-group7/pull/10. Stage 9 code and evidence were integrated into main. Verified starting SHA: `6b6595180d82dfc6f9e67daf6b20931163df544c`. Stage 12 release PR pending.
+Issue / PR / diff links and reviewed SHA: Stage 9 implementation PR: https://github.com/shiven-uc/st1-assignment-3-group7/pull/10. Stage 12 release documentation PR: https://github.com/shiven-uc/st1-assignment-3-group7/pull/12. Verified Stage 9 baseline SHA: 6b6595180d82dfc6f9e67daf6b20931163df544c. Final Stage 12 integration is pending.
 Independent reviewer / feedback / response: Anish Atamkur reviewed the Stage 9 work and confirmed agreement with the feedback relayed in PR #10. For Stage 12, Anish reported that SmartCare works. His exact independent commands and test output were not supplied. No additional defects were reported.
 Integration commit / full recheck: Stage 9 common integration SHA `6b6595180d82dfc6f9e67daf6b20931163df544c`. From `project/`, `python -m pytest -q` returned 76 passed in 0.10s during Stage 12 verification. Final Stage 12 integration remains pending.
 Tracked and untracked file inspection / cleanliness: Before Stage 12 changes, the Stage 9 main branch had a clean working tree. Stage 12 work is being completed on `stage12-release`, with `stage12/stage12_activities_and_evidence.md` modified. Final tracked/untracked inspection remains pending.
@@ -162,7 +161,7 @@ Named substantive contributions: Shiven coordinated the Stage 9 implementation, 
 
 ## J Human release decision
 
-Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: NOT YET READY - final release checks and submission packaging remain outstanding.
+Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: NOT YET READY - application tests and demo pass, but final submission packaging, exact candidate verification and release approval remain outstanding.
 Approver / date / rationale and evidence: Shiven is coordinating release preparation. Anish Atamkur reported that SmartCare works. Final group release approval is pending. The latest verified regression returned 76 passed in 0.10s.
 What risks remain / conditions / owners: Shiven must complete the final README, dependency, repository and ZIP checks and confirm submission requirements. Independent reproduction evidence from Anish remains limited to his reported feedback.
 Can the team explain the system: The team has documented SmartCare's domain objects, shared store, services, pure queries and console responsibilities. Individual understanding will be demonstrated during the course viva.
@@ -182,11 +181,11 @@ Source ZIP name / SHA correspondence / extracted comparison: Pending — the fin
 
 ## L Submission package verification
 
-- [ ] Feature freeze and scoped requirements traced.
-- [ ] Applicable full regressions, integrated demo and invalid paths verified.
+- [x] Feature freeze and scoped requirements traced.
+- [x] Applicable full regressions, integrated demo and invalid paths verified.
 - [ ] Architecture/code quality and final AI/dependency checks complete.
 - [ ] Root README and project/README reproduced by another verifier.
-- [ ] Release notes, technical debt and limitations visible.
+- [x] Release notes, technical debt and limitations visible.
 - [ ] Independent human review, integration and release decision recorded.
 - [ ] Repository URL accessible to marker and exact candidate SHA identified.
 - [ ] One source ZIP from submitted commit with root README.md and .gitignore.
@@ -194,38 +193,48 @@ Source ZIP name / SHA correspondence / extracted comparison: Pending — the fin
 - [x] All common applicable stage records included; Stage 10/11 records completed only for the PG pathway. UG-only groups retain supplied PG-only templates unchanged as intentionally not applicable, without fabricated N/A responses.
 - [ ] No .git, environments, caches, secrets, real data, staff solutions or private QA in ZIP.
 - [ ] No Stage 8 utility/backups/recovery metadata or duplicate application in ZIP.
-- [ ] Mixed-group common protection and candidate upload routing checked.
+- [x] Mixed-group common protection and candidate upload routing checked.
 - [ ] Group reflection, confidential individual peer forms and common team viva routed separately.
 
-Confirmed assessment item/upload route: [response]
-Deadline/timezone: [response]
-Repository access arrangement: [response]
-Mixed-candidate upload arrangement: [response]
-Oral/video recording/accessibility arrangements: [response]
-Remaining administration or release dependency: [response]
+Confirmed assessment item/upload route: Assignment 3 is managed through Canvas. The final group source ZIP and repository URL are required.
+Deadline/timezone: Deadline: 11:59 November 9th, Timezone: Australia/Canberra (AEDT).
+Repository access arrangement: https://github.com/shiven-uc/st1-assignment-3-group7
+Mixed-candidate upload arrangement: N/A
+Oral/video recording/accessibility arrangements: Will be done on Cadmus through the Canvas link.
+Remaining administration or release dependency: Finalise the Stage 12 release decision, merge PR #12, verify the final Git commit, create and check the source ZIP, and submit the required files before 11:59 pm on 9 November 2026.
 
 
 ## M Formative questions
 
-1. What is a release candidate? [response]
+1. What is a release candidate?
+A release candidate is a version of software with its required features completed that is undergoing final verification before release.
 
-2. What is feature freeze and why is it used? [response]
+2. What is feature freeze and why is it used?
+Feature freeze means stopping new feature development so the team can focus on testing, reviewing and stabilising the release.
 
-3. What is regression testing in a release context? [response]
+3. What is regression testing in a release context?
+Regression testing checks that existing functionality still works after changes. For SmartCare, the accumulated suite contains 76 passing tests.
 
-4. What is a known limitation? [response]
+4. What is a known limitation?
+A known limitation is a documented restriction of the software. For example, SmartCare's data is lost when the program exits.
 
-5. What is technical debt? [response]
+5. What is technical debt?
+Technical debt is the future maintenance cost associated with shortcuts, deferred improvements or weaknesses in an implementation.
 
-6. What are release notes? [response]
+6. What are release notes?
+Release notes summarise the software's delivered features, important fixes, known limitations and relevant release information.
 
-7. What is software maintenance? [response]
+7. What is software maintenance?
+Software maintenance involves fixing defects, improving reliability and adapting software to changing requirements after release.
 
-8. What is the purpose of the individual demonstration/viva? [response]
+8. What is the purpose of the individual demonstration/viva?
+It allows assessors to check that each student understands the project, their contributions, technical decisions and testing evidence.
 
-9. What should the final responsible-AI check establish before release? [response]
+9. What should the final responsible-AI check establish before release?
+It should confirm that AI-assisted work was reviewed, tested, documented honestly and checked for security, privacy and correctness risks.
 
-10. What is the main course conclusion about AI and the role of the software engineer? [response]
+10. What is the main course conclusion about AI and the role of the software engineer?
+AI can help generate code and identify problems, but software engineers remain responsible for requirements, architecture, verification, risk management and the final release decision.
 
 
 ## N Reflection viva and handover
@@ -261,5 +270,5 @@ One paragraph — If AI can write code why do we still need software engineers: 
 Optional bounded-change practice only: validation rule, focused test, safe error-message change, explicit-input query or agreed status rule with test. Explain expected impact before editing, make a small change, run the test, and identify evidence to inspect if unsure. No live AI unless explicitly permitted. Preserve the submitted candidate.
 
 Practice question/change and reasoning: Not undertaken. No optional code changes were made because the verified release candidate is under feature freeze.
-Separate reflection / peer / common team viva evidence links and routing: Stage 12 group reflection is recorded in this document. Individual confidential peer-assessment forms and the common team viva must be submitted through their separately confirmed assessment routes; submission evidence pending.
+Separate reflection / peer / common team viva evidence links and routing: The Group Reflection Report, peer-assessment forms and oral assessment are separate assessment components. They are not included in the Stage 12 source ZIP and will be completed through their Cadmus and Canvas.
 No further coding stage. Later corrections use the published assessment process.
