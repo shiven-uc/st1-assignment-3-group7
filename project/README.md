@@ -1,10 +1,23 @@
-# SmartCare — Stage 9 Integrated Application
+# SmartCare — Stage 12 Undergraduate Release Candidate
 
 Software Technology 1, Assignment 3 — 2026 revision 2.
 
 SmartCare is a Python application for registering patients and practitioners, booking and cancelling appointments, retrieving appointment history, and listing a practitioner's appointments.
 
 The application uses the Python standard library at runtime. Development tests use pytest.
+
+## Requirements and Setup
+
+The course's documented baseline is Python 3.13 with pytest 8.3.5. The team's latest local verification used Python 3.14.3 and pytest 8.3.5.
+
+From the repository root, open a terminal and run:
+
+```powershell
+cd project
+python -m pip install -r requirements-dev.txt
+```
+
+No additional third-party runtime dependencies are required.
 
 ## Running SmartCare
 
@@ -48,15 +61,9 @@ From `project/`:
 python -m pytest -q
 ```
 
-Stage 9 verification: **76 passed, 0 failed**, in 0.10 seconds.
+Latest local Stage 12 verification: **76 passed, 0 failed**, in 0.13 seconds.
 
-The test suite includes previous-stage regression tests and Stage 9 query, service, workflow and console tests.
-
-If pytest is not installed in your approved environment:
-
-```powershell
-python -m pip install -r requirements-dev.txt
-```
+The test suite includes cumulative regression tests covering registration, lookup, booking, conflicts, cancellation, retained history, listing, sorting, filtering and console recovery.
 
 ## Application Responsibilities
 
@@ -86,8 +93,18 @@ The services share one `SmartCareDataStore` for each interactive session.
 
 SmartCare uses **session-only in-memory storage**. All registered records and appointments are lost when the application exits. Restart persistence (FR-10) is retired and is not required.
 
-There is no database, file-based persistence, rescheduling or PG assurance extension in this Stage 9 implementation.
+There is no database, file-based persistence, rescheduling or PG-only extension in this undergraduate release candidate.
 
 Booking uses local minute-precision date/time values. No age, appointment-duration, patient-conflict or past-date restriction is imposed by the supplied requirements.
 
+The application has no authentication, clinical integration, notifications, billing, production monitoring or concurrency guarantees. It is intended only as a teaching demonstration, not for production healthcare use.
+
 The application uses synthetic teaching data only. Do not enter real patient information.
+
+## Responsible AI and Release Evidence
+
+GitHub Copilot was used to review the Stage 9 implementation. Its recommendation to add automated console tests was accepted and verified. An optional data-store hardening recommendation was not implemented because it was outside the assessed service workflow.
+
+AI suggestions were evaluated by human reviewers and checked against requirements and tests.
+
+Release scope, regression evidence, known limitations, human review and final release decisions are documented in `../stage12/stage12_activities_and_evidence.md`.
