@@ -162,8 +162,8 @@ Named substantive contributions: Shiven coordinated the Stage 9 implementation, 
 ## J Human release decision
 
 Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: NOT YET READY - application tests and demo pass, but final submission packaging, exact candidate verification and release approval remain outstanding.
-Approver / date / rationale and evidence: Shiven is coordinating release preparation. Anish Atamkur reported that SmartCare works. Final group release approval is pending. The latest verified regression returned 76 passed in 0.10s.
-What risks remain / conditions / owners: Shiven must complete the final README, dependency, repository and ZIP checks and confirm submission requirements. Independent reproduction evidence from Anish remains limited to his reported feedback.
+Approver / date / rationale and evidence: Shiven coordinated the Stage 12 release verification. Anish Atamkur reviewed SmartCare and confirmed that the application works, with final release preparation and submission still pending. Shiven verified 76 passing automated tests, the interactive workflow and separate-copy reproduction. Final group release decision will be recorded after the remaining packaging checks.
+What risks remain / conditions / owners: Shiven will complete final Git integration, verify the submitted commit and source ZIP, and confirm repository access and submission arrangements. No release blocking application defect has been identified. Anish is awaiting completion of the remaining release and submission tasks.
 Can the team explain the system: The team has documented SmartCare's domain objects, shared store, services, pure queries and console responsibilities. Individual understanding will be demonstrated during the course viva.
 Can a change be recovered: Yes. Git preserves the verified common checkpoint `6b6595180d82dfc6f9e67daf6b20931163df544c`. Changes can be compared against this commit, corrected and retested.
 Common decision / PG decision where different: Common UG release decision is NOT YET READY pending final checks. PG decision is not applicable because both group members are undergraduate students.
@@ -171,19 +171,18 @@ Common decision / PG decision where different: Common UG release decision is NOT
 
 ## K Final tested release SHA
 
-Exact common tested SHA: `6b6595180d82dfc6f9e67daf6b20931163df544c` — verified from `project/` with `python -m pytest -q`: 76 passed in 0.10s.
-Exact PG tested SHA or not applicable: Not applicable — UG-only group.
-Final submitted SHA / repository URL: Final Stage 12 submission SHA pending. Repository: https://github.com/shiven-uc/st1-assignment-3-group7
-Evidence-only later commit and difference explanation: Stage 12 documentation is being completed after the verified Stage 9 checkpoint. Any later evidence-only commit will be recorded separately from the tested application code.
-Executable changes after testing and re-verification: No Stage 12 executable code changes reported so far. Final regression will be repeated against the completed release candidate.
-Source ZIP name / SHA correspondence / extracted comparison: Pending — the final source ZIP has not yet been created or checked against the submitted SHA.
-
+Exact common tested SHA: 6b6595180d82dfc6f9e67daf6b20931163df544c — verified with python -m pytest -q from project/: 76 passed. The same application code was retested during Stage 12, including a separate-copy verification with 76 passed in 0.25s.
+Exact PG tested SHA or not applicable: Not applicable
+Final submitted SHA / repository URL: Pending final PR #12 integration. Repository: https://github.com/shiven-uc/st1-assignment-3-group7
+Evidence-only later commit and difference explanation: Stage 12 documentation was updated in commit e1a844d on branch stage12-release. Changes involved the root README, project README and Stage 12 evidence record. No application source or test files were changed.
+Executable changes after testing and re-verification: No executable code changes were made during Stage 12. The original repository and a separate copy both passed all 76 tests. The final integrated commit will be rechecked after merging.
+Source ZIP name / SHA correspondence / extracted comparison: Pending — the final source ZIP will be created and checked against the submitted commit after integration.
 
 ## L Submission package verification
 
 - [x] Feature freeze and scoped requirements traced.
 - [x] Applicable full regressions, integrated demo and invalid paths verified.
-- [ ] Architecture/code quality and final AI/dependency checks complete.
+- [X] Architecture/code quality and final AI/dependency checks complete.
 - [ ] Root README and project/README reproduced by another verifier.
 - [x] Release notes, technical debt and limitations visible.
 - [ ] Independent human review, integration and release decision recorded.

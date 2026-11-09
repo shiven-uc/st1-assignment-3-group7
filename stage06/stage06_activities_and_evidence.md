@@ -79,8 +79,8 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 | Issue link | Requirement | Owner | Acceptance criteria or precise link | Status |
 |---|---|---|---|---|
-| https://github.com/shiven-uc/st1-assignment-3-group7/issues/1 | FR-02 Patient Search | shiven-uc | See issue #1: patient and practitioner lookup. Supporting criterion for `find_practitioner` to be confirmed with tutor. | Open |
-| https://github.com/shiven-uc/st1-assignment-3-group7/issues/2 | FR-06 Cancellation with FR-07 retained history | shiven-uc | See issue #2: cancel_appointment | Open |
+| https://github.com/shiven-uc/st1-assignment-3-group7/issues/1 | FR-02 Patient Search | shiven-uc | See issue #1: patient and practitioner lookup. Supporting criterion for `find_practitioner` to be confirmed with tutor. | Closed |
+| https://github.com/shiven-uc/st1-assignment-3-group7/issues/2 | FR-06 Cancellation with FR-07 retained history | shiven-uc | See issue #2: cancel_appointment | Closed |
 
 ## G Pull request evidence
 
@@ -224,7 +224,7 @@ Changes should be developed on a feature branch, supported by appropriate tests 
 - Observed result: 34 tests passed in 0.11 seconds on updated main.
 - PR and another-member reviewer: PR #3 (FR-02 lookup) and PR #5 (FR-06/FR-07 cancellation), both reviewed by Anish Atamkur (anish32132). Anish's communicated approvals were documented by Shiven in GitHub comments.
 - Unresolved issue or none: Both feature PRs have been merged, and integrated verification passed with 34 tests. Confirmation of Issues #1 and #2 closure, Anish's separate integrated verification, and integration of documentation PR #4 remain outstanding.
-- Stage 7 handover status: All three Stage 6 service targets have been implemented and verified on main. Final documentation integration and confirmation of the remaining checklist items are pending.
+- Stage 7 handover status: All three Stage 6 service targets were implemented and verified on main, and the project subsequently progressed through Stages 7, 8, 9 and 12. The original Stage 6 feature PRs were merged and their functionality remains covered by the cumulative regression suite.
 - Final submitted SHA if later than tested SHA: Tested code SHA is eba031e6f66f8c736ab52220e96437df523506d0. Documentation commit 496932b9e8df0ebc7e2d0baf70deacad9f582abf records earlier evidence changes on docs/stage06-record. The final integrated submission SHA will be determined after PR #4 is merged. Documentation-only changes do not alter the tested application code.
 
 - [x] Three Stage 6 service targets completed and checked.
@@ -234,8 +234,8 @@ Changes should be developed on a feature branch, supported by appropriate tests 
 - [x] Human-first review and required Copilot comparison recorded.
 - [x] Feedback resolved and approval recorded before merge.
 - [ ] Everyone pulled main and integrated checks passed.
-- [ ] Required activities, quiz responses and contribution notes completed.
-- [ ] Only synthetic data included; confidential peer material kept out.
-- [ ] Tutor can trace a requirement through issue, code, tests, PR and checkpoint.
+- [x] Required activities, quiz responses and contribution notes completed.
+- [x] Only synthetic data included; confidential peer material kept out.
+- [x] Tutor can trace a requirement through issue, code, tests, PR and checkpoint.
 
 Do not write a file's own future commit SHA into that file. Record the tested code SHA first, then commit the evidence; explain the difference when submitting.
